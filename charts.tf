@@ -4,6 +4,20 @@ resource "kubernetes_namespace" "tools_namespace" {
   }
 }
 
+resource "helm_release" "kube-prometheus-stack" {
+  name       = "kube-prometheus-stack"
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = "51.8.1"
+
+  namespace  = var.tools_namespace
+
+  values = [
+    "${file("configs/kube-prometheus-stack.yaml")}"
+  ]
+}
+
+
 resource "helm_release" "grafana" {
   name       = "grafana"
   repository = "https://grafana.github.io/helm-charts/"
@@ -14,6 +28,9 @@ resource "helm_release" "grafana" {
 
   values = [
     "${file("configs/grafana.yaml")}"
+  ]
+  depends_on = [
+    helm_release.kube-prometheus-stack
   ]
 }
 
@@ -28,18 +45,9 @@ resource "helm_release" "grafana-agent" {
   values = [
     "${file("configs/grafana-agent.yaml")}"
   ]
-}
-
-resource "helm_release" "kube-prometheus-stack" {
-  name       = "kube-prometheus-stack"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "kube-prometheus-stack"
-  version    = "51.8.1"
-
-  namespace  = var.tools_namespace
-
-  values = [
-    "${file("configs/kube-prometheus-stack.yaml")}"
+  
+  depends_on = [
+    helm_release.kube-prometheus-stack
   ]
 }
 
@@ -54,6 +62,9 @@ resource "helm_release" "loki" {
   values = [
     "${file("configs/loki.yaml")}"
   ]
+  depends_on = [
+    helm_release.kube-prometheus-stack
+  ]
 }
 
 resource "helm_release" "minio" {
@@ -66,6 +77,9 @@ resource "helm_release" "minio" {
 
   values = [
     "${file("configs/minio.yaml")}"
+  ]
+  depends_on = [
+    helm_release.kube-prometheus-stack
   ]
 }
 
@@ -80,6 +94,10 @@ resource "helm_release" "promtail" {
   values = [
     "${file("configs/promtail.yaml")}"
   ]
+
+  depends_on = [
+    helm_release.kube-prometheus-stack
+  ]
 }
 
 resource "helm_release" "tempo" {
@@ -92,5 +110,9 @@ resource "helm_release" "tempo" {
 
   values = [
     "${file("configs/tempo.yaml")}"
+  ]
+
+  depends_on = [
+    helm_release.kube-prometheus-stack
   ]
 }
