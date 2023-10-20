@@ -1,0 +1,15 @@
+name: Test installation in Minikube
+on: [push]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.1.7
+      - uses: medyagh/setup-minikube@latest
+        with:
+          minikube-version: 1.31.2
+      - run: terraform init
+      - run: terraform apply
