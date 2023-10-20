@@ -1,0 +1,14 @@
+prometheus:
+  ingress:
+    enabled: true
+    hosts:
+      - prometheus.local
+    path:
+      - /
+    tls: []
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 7d
+
+grafana:
+  enabled: false

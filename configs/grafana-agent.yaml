@@ -1,0 +1,58 @@
+agent:
+  configMap:
+    create: true
+    content: |
+      otelcol.receiver.otlp "collector" {
+        grpc {
+          endpoint      = "0.0.0.0:4317"
+        }
+        output {
+          traces = [otelcol.exporter.otlp.tempo.input]
+        }
+      }
+      otelcol.exporter.otlp "tempo" {
+        client {
+          endpoint      = "tempo:4317"
+          tls {
+            insecure             = true
+            insecure_skip_verify = true
+          }
+        }
+      }
+
+      loki.write "default" {
+        endpoint {
+          url = "http://loki-gateway/api/v1/push"
+        }
+      }
+
+      faro.receiver "faro" {
+        server {
+          listen_address = "0.0.0.0"
+        }
+  
+        output {
+          logs = [loki.write.default.receiver]
+          traces = [otelcol.exporter.otlp.tempo.input]
+        }
+      }
+
+  extraPorts:
+    - name: faro
+      port: 12347
+      targetPort: 12347
+      protocol: TCP
+    - name: otel-collector
+      port: 4317
+      targetPort: 4317
+
+serviceMonitor:
+  enabled: true
+
+ingress:
+  enabled: true
+  path: /
+  faroPort: 12347
+  hosts:
+    - grafana-agent.local
+  tls: []

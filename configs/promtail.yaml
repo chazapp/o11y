@@ -1,0 +1,7 @@
+serviceMonitor:
+  enabled: true
+
+config:
+  clients:
+    - url: http://loki-gateway/loki/api/v1/push
+  enableTracing: true

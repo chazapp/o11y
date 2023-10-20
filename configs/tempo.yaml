@@ -1,0 +1,15 @@
+metricsGenerator:
+  enabled: true
+  remoteWriteUrl: "http://kube-prometheus-stack-prometheus:9090/api/v1/write"
+
+serviceMonitor:
+  enabled: true
+
+storage:
+  trace:
+    backend: s3
+    s3:
+      bucket: tempo
+      endpoint: http://minio:9000
+      access_key: tempo
+      secret_key: tempotempo
