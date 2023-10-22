@@ -116,3 +116,20 @@ resource "helm_release" "tempo" {
     helm_release.kube-prometheus-stack
   ]
 }
+
+resource "helm_release" "pyroscope" {
+  name       = "pyroscope"
+  repository = "https://grafana.github.io/helm-charts/"
+  chart      = "pyroscope"
+  version    = " 1.1.0"
+
+  namespace  = var.tools_namespace
+
+  values = [
+    "${file("configs/pyroscope.yaml")}"
+  ]
+
+  depends_on = [
+    helm_release.kube-prometheus-stack
+  ]
+}

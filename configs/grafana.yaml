@@ -33,7 +33,10 @@ datasources:
         jsonData:
           tracesToLogsV2:
             datasourceUid: "loki"
-
+      - name: Pyroscope
+        type: phlare
+        url: http://pyroscope:4040/
+      
 extraObjects:
   - apiVersion: v1
     kind: Secret
