@@ -10,5 +10,9 @@ spec:
     protocol: TCP
     port: 80
     targetPort: {{ .Values.service.port }}
+  - name: metrics
+    protocol: TCP
+    port: 8081
+    targetPort: 8081
   type: {{ .Values.service.type }}
 

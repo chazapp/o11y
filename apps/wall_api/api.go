@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"net/http/pprof"
 	"os"
 	"time"
 
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
+	_ "github.com/grafana/pyroscope-go/godeltaprof/http/pprof"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -17,10 +18,10 @@ import (
 
 // Define the WallMessage model
 type WallMessage struct {
-	ID                uint `gorm:"primary_key"`
-	Username          string
-	Message           string
-	CreationTimestamp time.Time
+	ID                uint      `gorm:"primary_key"`
+	Username          string    `json:"username"`
+	Message           string    `json:"message"`
+	CreationTimestamp time.Time `json:"creationTimestamp"`
 }
 
 // Define your database connection
@@ -49,10 +50,14 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int) (err error) {
 	r.POST("/message", createMessage)
 	r.GET("/message/:id", getMessage)
 	r.GET("/messages", getMessages)
-	r.GET("/health", healthCheck)
-	r.GET("/pprof", gin.WrapF(pprof.Index))
-	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
+	// Start /pprof, /metric and /health on port 8081
+	optsRouter := gin.New()
+	pprof.Register(optsRouter)
+	optsRouter.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	optsRouter.GET("/health", healthCheck)
+
+	go optsRouter.Run("0.0.0.0:8081")
 	// Start the server
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }

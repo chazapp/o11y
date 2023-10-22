@@ -38,4 +38,6 @@ spec:
             value: "8080"
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
             value: "http://grafana-agent.monitoring:4317"
+          - name: PRINT_TRACES
+            value: "true"
       {{- end -}}

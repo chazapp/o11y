@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/chazapp/o11y/wall_api
-  tag: 1.0.4
+  tag: 1.0.6
   pullPolicy: IfNotPresent
 
 service:
