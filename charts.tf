@@ -121,7 +121,7 @@ resource "helm_release" "pyroscope" {
   name       = "pyroscope"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "pyroscope"
-  version    = " 1.1.0"
+  version    = "1.1.0"
 
   namespace  = var.tools_namespace
 
@@ -132,4 +132,18 @@ resource "helm_release" "pyroscope" {
   depends_on = [
     helm_release.kube-prometheus-stack
   ]
+}
+
+resource "kubernetes_namespace" "apps_namespace" {
+  metadata {
+    name = "apps"
+  }
+}
+
+
+resource "helm_release" "wall_api" {
+  name      = "wall-api"
+  chart = "./apps/wall_api/chart"
+  version = "0.1.0"
+  namespace = "apps"
 }

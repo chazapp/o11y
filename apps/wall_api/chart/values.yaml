@@ -1,0 +1,31 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/chazapp/o11y/wall_api
+  tag: 1.0.4
+  pullPolicy: IfNotPresent
+
+service:
+  name: wall-api
+  type: ClusterIP
+  port: 8080
+
+postgresql:
+  name: postgresql
+  serviceName: postgresql
+  user: myuser
+  password: mypassword
+  database: wall_db
+  storageClassName: standard
+  storageSize: 1Gi
+
+ingress:
+  enabled: true
+  host: wall-api.local  # Change to your desired host
+  tls:
+    secretName: my-api-tls-secret
+    hosts:
+      - wall-api.local
+
+beyla:
+  enabled: true

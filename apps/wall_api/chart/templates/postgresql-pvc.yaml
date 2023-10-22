@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: {{ .Values.postgresql.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.postgresql.storageSize }}

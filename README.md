@@ -5,7 +5,7 @@ A fully configured observability stack based on Grafana's tools.
 
 ## Contents
 
-A Terraform project that applies to a Minikube cluster the following Helm Charts:
+A Terraform project that deploys to a Minikube cluster the following tools:
   - Grafana
   - Grafana-Agent
   - Kube-Prometheus-Stack
@@ -13,6 +13,12 @@ A Terraform project that applies to a Minikube cluster the following Helm Charts
   - Promtail
   - Tempo
   - Minio
+  - Pyroscope
+
+It also deploys the following example services:
+  - The WallAPI, a REST API written in Golang, auto-instrumented via Bayla and profiled by Pyroscope via /pprof
+  - The WallClient, a front-end client written in React, auto-instrumented client-side via Faro -> Grafana Agent -> Tempo & Loki
+
 
 
 ## Usage
@@ -31,10 +37,7 @@ Once applied, you may add the Ingress for the various services to your `/etc/hos
 $ kubectl get ingress -n monitoring
 NAME                               CLASS    HOSTS                 ADDRESS        PORTS   AGE
 grafana                            <none>   grafana.local         192.168.49.2   80      10m
-grafana-agent                      <none>   grafana-agent.local   192.168.49.2   80      10m
-kube-prometheus-stack-prometheus   <none>   prometheus.local      192.168.49.2   80      10m
-loki-gateway                       <none>   loki.local            192.168.49.2   80      10m
-minio-console                      <none>   console.minio.local   192.168.49.2   80      10m
+...
 ```
 
 *Note: On Windows, you may need to use the `minikube tunnel` command and use 127.0.0.1 instead !*
