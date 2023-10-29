@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	_ "github.com/grafana/pyroscope-go/godeltaprof/http/pprof"
@@ -16,40 +17,44 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// Define the WallMessage model
 type WallMessage struct {
-	ID                uint      `gorm:"primary_key"`
+	ID                uint      `gorm:"primary_key" json:"id"`
 	Username          string    `json:"username"`
 	Message           string    `json:"message"`
 	CreationTimestamp time.Time `json:"creationTimestamp"`
 }
 
-// Define your database connection
 var db *gorm.DB
 
-func API(dbUser, dbPassword, dbHost, dbName string, port int) (err error) {
-	// Initialize the database
+var wsHub = newHub()
+
+func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []string) (err error) {
 	initDB(dbUser, dbPassword, dbHost, dbName)
 	defer db.Close()
 
-	// Create a Gin router
 	r := gin.New()
 	r.Use(gin.Recovery())
 
-	// Log using zerolog
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
-	// Middleware for structured logging
-	r.Use(gin.LoggerWithWriter(log.Logger))
-	// r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-	// 	return fmt.Sprintf("clientIP=%s method=%s statusCode=%d latency=%s path=%s\n",
-	// 		param.ClientIP, param.Method, param.StatusCode, param.Latency, param.Path)
-	// }))
+	// ToDo: figure out structured Logging
+	r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("clientIP=%s method=%s statusCode=%d latency=%s path=%s\n",
+			param.ClientIP, param.Method, param.StatusCode, param.Latency, param.Path)
+	}))
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     allowedOrigins,
+		AllowCredentials: true,
+		AllowMethods:     []string{"GET", "POST"},
+		AllowHeaders:     []string{"*"},
+	}))
 
-	// Routes
 	r.POST("/message", createMessage)
 	r.GET("/message/:id", getMessage)
 	r.GET("/messages", getMessages)
+
+	go wsHub.run()
+	r.GET("/ws", wsHandler)
 
 	// Start /pprof, /metric and /health on port 8081
 	optsRouter := gin.New()
@@ -58,6 +63,8 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int) (err error) {
 	optsRouter.GET("/health", healthCheck)
 
 	go optsRouter.Run("0.0.0.0:8081")
+
+	// Emit received message via WebSocket Broadcast
 	// Start the server
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
@@ -83,7 +90,7 @@ func createMessage(c *gin.Context) {
 
 	message.CreationTimestamp = time.Now()
 	db.Create(&message)
-
+	wsHub.broadcast <- message
 	c.JSON(http.StatusCreated, message)
 }
 
@@ -94,7 +101,6 @@ func getMessage(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Message not found"})
 		return
 	}
-
 	c.JSON(http.StatusOK, message)
 }
 

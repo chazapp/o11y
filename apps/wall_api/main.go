@@ -17,13 +17,11 @@ func main() {
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:    "dbUser",
-						Value:   "username",
 						EnvVars: []string{"PG_USER"},
 						Usage:   "PostgreSQL User",
 					},
 					&cli.StringFlag{
 						Name:    "dbPassword",
-						Value:   "password",
 						EnvVars: []string{"PG_PASSWORD"},
 						Usage:   "PostgreSQL Password",
 					},
@@ -45,6 +43,11 @@ func main() {
 						EnvVars: []string{"PG_DBNAME"},
 						Usage:   "Port of the API Server",
 					},
+					&cli.StringSliceFlag{
+						Name:    "allowedOrigins",
+						EnvVars: []string{"ALLOWED_ORIGINS"},
+						Usage:   "CORS Allowed Origins",
+					},
 				},
 				Action: func(c *cli.Context) error {
 					// Log using zerolog
@@ -56,8 +59,8 @@ func main() {
 					dbHost := c.String("dbHost")
 					dbName := c.String("dbName")
 					port := c.Int("port")
-
-					return API(dbUser, dbPassword, dbHost, dbName, port)
+					allowedOrigins := c.StringSlice("allowedOrigins")
+					return API(dbUser, dbPassword, dbHost, dbName, port, allowedOrigins)
 				},
 			},
 		},
