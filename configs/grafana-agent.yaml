@@ -25,18 +25,45 @@ agent:
         }
       }
 
+      loki.process "faro_logfmt" {
+        forward_to = [loki.write.default.receiver]
+        stage.logfmt {
+          mapping = {
+            "kind"          = "",
+            "level"         = "",
+            "browser_name"  = "",
+            "browser_os"    = "",
+          }
+        }
+
+        stage.labels {
+          values = {
+            kind            = "",
+            level           = "",
+            browser_name    = "",
+            browser_os      = "",
+          }
+        }
+      }
+
       loki.write "default" {
         endpoint {
-          url = "http://loki-gateway/api/v1/push"
+          url = "http://loki-write:3100/loki/api/v1/push"
         }
       }
 
       faro.receiver "faro" {
+        extra_log_labels = {
+            "app" = "wall-browser",
+        }
         server {
           listen_address = "0.0.0.0"
+          cors_allowed_origins = [
+            "*",
+          ]
         }
         output {
-          logs = [loki.write.default.receiver]
+          logs = [loki.process.faro_logfmt.receiver]
           traces = [otelcol.exporter.otlp.tempo.input]
         }
       }
