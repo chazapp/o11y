@@ -29,3 +29,6 @@ ingress:
     secretName: my-api-tls-secret
     hosts:
       - wall-api.local
+
+beyla:
+  enabled: true
