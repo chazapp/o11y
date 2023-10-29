@@ -1,8 +1,11 @@
 replicaCount: 1
 
+config:
+  allowedOrigins: https://wall.local
+
 image:
   repository: ghcr.io/chazapp/o11y/wall_api
-  tag: 1.0.6
+  tag: 1.1.0
   pullPolicy: IfNotPresent
 
 service:
@@ -26,6 +29,3 @@ ingress:
     secretName: my-api-tls-secret
     hosts:
       - wall-api.local
-
-beyla:
-  enabled: true
