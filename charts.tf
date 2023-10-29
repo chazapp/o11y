@@ -147,3 +147,10 @@ resource "helm_release" "wall_api" {
   version = "0.1.0"
   namespace = "apps"
 }
+
+resource "helm_release" "wall_front" {
+  name      = "wall-front"
+  chart = "./apps/wall_front/chart"
+  version = "0.1.0"
+  namespace = "apps"
+}
