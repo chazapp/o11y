@@ -28,10 +28,10 @@ spec:
               path: /health
               port: 80
             timeoutSeconds: 5
-          volumeMounts:
-            - name: env-js
-              mountPath: /usr/share/nginx/html/env.js
-              subPath: env.js
+        volumeMounts:
+          - name: env-js
+            mountPath: /usr/share/nginx/html/env.js
+            subPath: env.js
       volumes:
         - name: env-js
           configMap:
