@@ -5,9 +5,9 @@ metadata:
 data:
   env.js: |
     window.env = {
-        API_URL: "{{ .Values.apiURL }}"
-        FARO_URL: "{{ .Values.faroURL }}"
-        VERSION: {{ .Chart.AppVersion }}
+        API_URL: "{{ .Values.apiURL }}",
+        FARO_URL: "{{ .Values.faroURL }}",
+        VERSION: "{{ .Chart.AppVersion }}"
     }
 
 
