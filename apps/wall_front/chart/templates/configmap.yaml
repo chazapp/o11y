@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}
+data:
+  env.js: |
+    window.env = {
+        API_URL: "{{ .Values.apiURL }}"    
+    }
+
+
