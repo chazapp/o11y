@@ -1,6 +1,7 @@
 replicaCount: 1
 
 apiURL: https://wall-api.local
+faroURL: https://grafana-agent.local
 
 image:
   repository: ghcr.io/chazapp/o11y/wall_front
