@@ -2,29 +2,26 @@
 
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import axios from "axios";
 import { Box } from "@mui/material";
 import Form from './Form';
 import { Stage, Layer, Text } from 'react-konva';
 import { WallMessage } from './types';
 import { getRandomInt, httpUrlToWebSocketUrl } from './utils';
 
-function App() {
+function App(props: {apiUrl: string}) {
+  const { apiUrl } = props;
   const [wallMessages, setWallMessages] = useState<WallMessage[]>([]);
   const [webSocket, setWebSocket] = useState<WebSocket | undefined>(undefined);
-  const API_URL = window.env && window.env.API_URL ? window.env.API_URL : process.env.REACT_APP_API_URL;
-  if (API_URL === undefined) {
-    throw new Error("API URL is undefined !")
-  }
 
-  axios.defaults.baseURL = API_URL;
   useEffect(() => {
     if (webSocket) {
       return;
     }
-    const ws = new WebSocket(`${httpUrlToWebSocketUrl(API_URL)}/ws`);
+    const ws = new WebSocket(`${httpUrlToWebSocketUrl(apiUrl)}/ws`);
     ws.onmessage = (event) => {
       const { message, username, id } = JSON.parse(event.data);
+
+      console.error("Received event message!");
       const wallMessage = {
         message,
         username,
@@ -61,7 +58,7 @@ function App() {
     
     }
     setWebSocket(ws);
-  }, [API_URL, webSocket]);
+  }, [apiUrl, webSocket]);
   
   return (
     <div className="App">
