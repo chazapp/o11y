@@ -1,6 +1,4 @@
 terraform {
-    backend "local" {
-    }
     required_providers {
         kubernetes = {
             source = "hashicorp/kubernetes"
@@ -15,11 +13,11 @@ terraform {
 
 provider "helm" {
     kubernetes {
-        config_path = "~/.kube/config"
+        config_path = var.kube_config
     }
 }
 
 provider "kubernetes" {
-    config_path = "~/.kube/config"
-    config_context = "minikube"
+    config_path = var.kube_config
+    config_context = var.kube_context
 }

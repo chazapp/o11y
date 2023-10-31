@@ -13,7 +13,7 @@ resource "helm_release" "kube-prometheus-stack" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/kube-prometheus-stack.yaml")}"
+    var.kube-prometheus-stack-override != null ? var.kube-prometheus-stack-override : "${file("${path.module}/configs/kube-prometheus-stack.yaml")}"
   ]
 }
 
@@ -27,7 +27,7 @@ resource "helm_release" "grafana" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/grafana.yaml")}"
+    var.grafana-override != null ? var.grafana-override : "${file("${path.module}/configs/grafana.yaml")}"
   ]
   depends_on = [
     helm_release.kube-prometheus-stack
@@ -43,7 +43,7 @@ resource "helm_release" "grafana-agent" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/grafana-agent.yaml")}"
+    var.grafana-agent-override != null ? var.grafana-agent-override : "${file("${path.module}/configs/grafana-agent.yaml")}"
   ]
   
   depends_on = [
@@ -60,7 +60,7 @@ resource "helm_release" "loki" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/loki.yaml")}"
+    var.loki-override != null ? var.loki-override : "${file("${path.module}/configs/loki.yaml")}"
   ]
   depends_on = [
     helm_release.kube-prometheus-stack
@@ -76,7 +76,7 @@ resource "helm_release" "minio" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/minio.yaml")}"
+    var.minio-override != null ? var.minio-override : "${file("${path.module}/configs/minio.yaml")}"
   ]
   depends_on = [
     helm_release.kube-prometheus-stack
@@ -92,7 +92,7 @@ resource "helm_release" "promtail" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/promtail.yaml")}"
+    var.promtail-override != null ? var.promtail-override : "${file("${path.module}/configs/promtail.yaml")}"
   ]
 
   depends_on = [
@@ -109,7 +109,7 @@ resource "helm_release" "tempo" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/tempo.yaml")}"
+    var.tempo-override != null ? var.tempo-override : "${file("${path.module}/configs/tempo.yaml")}"
   ]
 
   depends_on = [
@@ -126,7 +126,7 @@ resource "helm_release" "pyroscope" {
   namespace  = var.tools_namespace
 
   values = [
-    "${file("configs/pyroscope.yaml")}"
+    var.pyroscope-override != null ? var.pyroscope-override : "${file("${path.module}/configs/pyroscope.yaml")}"
   ]
 
   depends_on = [
@@ -143,14 +143,14 @@ resource "kubernetes_namespace" "apps_namespace" {
 
 resource "helm_release" "wall_api" {
   name      = "wall-api"
-  chart = "./apps/wall_api/chart"
+  chart = "${path.module}/apps/wall_api/chart"
   version = "0.1.0"
   namespace = "apps"
 }
 
 resource "helm_release" "wall_front" {
   name      = "wall-front"
-  chart = "./apps/wall_front/chart"
+  chart = "${path.module}/apps/wall_front/chart"
   version = "1.1.0"
   namespace = "apps"
 }
