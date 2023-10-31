@@ -12,4 +12,6 @@ jobs:
         with:
           minikube-version: 1.31.2
       - run: terraform init
+        working-directory: ./minikube
       - run: terraform apply -auto-approve
+        working-directory: ./minikube
