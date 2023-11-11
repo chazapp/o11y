@@ -13,11 +13,11 @@ terraform {
 
 provider "helm" {
     kubernetes {
-        config_path = var.kube_config
+        config_path = "~/.kube/config"
     }
 }
 
 provider "kubernetes" {
-    config_path = var.kube_config
-    config_context = var.kube_context
+    config_path = "~/.kube/config"
+    config_context = "minikube"
 }

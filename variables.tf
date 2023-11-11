@@ -4,16 +4,6 @@ variable "tools_namespace" {
     default = "monitoring"
 }
 
-variable "kube_config" {
-    description = "Path to .kube/config file"
-    type = string
-}
-
-variable "kube_context" {
-    description = "Kube Context entry"
-    type = string
-}
-
 variable "kube-prometheus-stack-override" {
     description = "Override values.yaml for Kube-Prometeus-Stack Helm Chart"
     type        = any

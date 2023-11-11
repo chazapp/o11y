@@ -5,7 +5,7 @@ A fully configured observability stack based on Grafana's tools.
 
 ## Contents
 
-A Terraform project that deploys to a Minikube cluster the following tools:
+A Terraform module that deploys to a Kubernetes cluster the following tools:
   - Grafana
   - Grafana-Agent
   - Kube-Prometheus-Stack
@@ -21,9 +21,13 @@ It also deploys the following example services:
 
 
 
-## Usage
+## Minikube
 
-Create a Minikube cluster, enable the `ingress` addon, then apply with Terraform
+The Terraform module provides default configuration values for all tools that are deployed within it. These
+are tailored for usage in a Minikube cluster, of which an application of the module is available in it own folder.
+
+
+To test the complete stack, create a Minikube cluster, enable the `ingress` addon, then apply with Terraform
 
 ```
 $ minikube start
@@ -31,7 +35,7 @@ $ minikube addons enable ingress
 $ terraform apply
 ```
 
-Once applied, you may add the Ingress for the various services to your `/etc/hosts` file
+Once applied, you may add the Ingresses for the various services to your `/etc/hosts` file
 
 ```
 $ kubectl get ingress -n monitoring
@@ -42,5 +46,5 @@ grafana                            <none>   grafana.local         192.168.49.2  
 
 *Note: On Windows, you may need to use the `minikube tunnel` command and use 127.0.0.1 instead !*
 
-You may now access the various services via your browser.
+You may now access services via your browser.
 
