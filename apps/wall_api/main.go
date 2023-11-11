@@ -48,6 +48,11 @@ func main() {
 						EnvVars: []string{"ALLOWED_ORIGINS"},
 						Usage:   "CORS Allowed Origins",
 					},
+					&cli.StringFlag{
+						Name:  "otlp",
+						Usage: "OTLP Endpoint to export traces",
+						Value: "",
+					},
 				},
 				Action: func(c *cli.Context) error {
 					// Log using zerolog
@@ -60,7 +65,11 @@ func main() {
 					dbName := c.String("dbName")
 					port := c.Int("port")
 					allowedOrigins := c.StringSlice("allowedOrigins")
-					return API(dbUser, dbPassword, dbHost, dbName, port, allowedOrigins)
+					otlpEndpoint := c.String("otlp")
+					if otlpEndpoint != "" {
+						initProvider(otlpEndpoint)
+					}
+					return API(dbUser, dbPassword, dbHost, dbName, port, allowedOrigins, otlpEndpoint)
 				},
 			},
 		},

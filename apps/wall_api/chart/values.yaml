@@ -2,10 +2,11 @@ replicaCount: 1
 
 config:
   allowedOrigins: https://wall.local
+  otlpEndpoint: grafana-agent.monitoring:4317
 
 image:
   repository: ghcr.io/chazapp/o11y/wall_api
-  tag: 1.1.0
+  tag: 1.2.4
   pullPolicy: IfNotPresent
 
 service:
@@ -31,4 +32,4 @@ ingress:
       - wall-api.local
 
 beyla:
-  enabled: true
+  enabled: false

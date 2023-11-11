@@ -27,6 +27,7 @@ spec:
         - "--dbHost={{ .Values.postgresql.serviceName }}"  # Use PostgreSQL service DNS as host
         - "--dbName={{ .Values.postgresql.database }}"  # PostgreSQL database from Helm values
         - "--allowedOrigins={{ .Values.config.allowedOrigins }}"
+        - "--otlp={{ .Values.config.otlpEndpoint}}"
       {{ if .Values.beyla.enabled }}
       - name: {{ .Release.Name }}-beyla
         image: grafana/beyla:latest

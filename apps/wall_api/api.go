@@ -4,17 +4,22 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	_ "github.com/grafana/pyroscope-go/godeltaprof/http/pprof"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"go.opentelemetry.io/otel"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 type WallMessage struct {
@@ -28,11 +33,11 @@ var db *gorm.DB
 
 var wsHub = newHub()
 
-func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []string) (err error) {
-	initDB(dbUser, dbPassword, dbHost, dbName)
-	defer db.Close()
+func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []string, otlpEndpoint string) (err error) {
+	initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
 
 	r := gin.New()
+	r.Use(otelgin.Middleware("wall-api"))
 	r.Use(gin.Recovery())
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
@@ -69,14 +74,18 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []s
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
 
-func initDB(dbUser, dbPassword, dbHost, dbName string) {
+func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) {
 	dbURI := fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=disable", dbUser, dbPassword, dbHost, dbName)
 	var err error
-	db, err = gorm.Open("postgres", dbURI)
+	db, err = gorm.Open(postgres.Open(dbURI), &gorm.Config{})
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to connect to the database")
 	}
-
+	if otlpEndpoint != "" {
+		if err := db.Use(tracing.NewPlugin(tracing.WithTracerProvider(otel.GetTracerProvider()))); err != nil {
+			log.Fatal().Err(err)
+		}
+	}
 	// Auto-migrate the schema
 	db.AutoMigrate(&WallMessage{})
 }
@@ -89,7 +98,7 @@ func createMessage(c *gin.Context) {
 	}
 
 	message.CreationTimestamp = time.Now()
-	db.Create(&message)
+	db.WithContext(c.Request.Context()).Create(&message)
 	wsHub.broadcast <- message
 	c.JSON(http.StatusCreated, message)
 }
@@ -97,7 +106,7 @@ func createMessage(c *gin.Context) {
 func getMessage(c *gin.Context) {
 	id := c.Param("id")
 	var message WallMessage
-	if err := db.Where("id = ?", id).First(&message).Error; err != nil {
+	if err := db.WithContext(c.Request.Context()).Where("id = ?", id).First(&message).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Message not found"})
 		return
 	}
@@ -105,11 +114,18 @@ func getMessage(c *gin.Context) {
 }
 
 func getMessages(c *gin.Context) {
-	limit := c.DefaultQuery("limit", "10")
-	offset := c.DefaultQuery("offset", "0")
-
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "Invalid limit"})
+		return
+	}
+	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "Invalid offset"})
+		return
+	}
 	var messages []WallMessage
-	db.Limit(limit).Offset(offset).Find(&messages)
+	db.WithContext(c.Request.Context()).Limit(limit).Offset(offset).Find(&messages)
 
 	c.JSON(http.StatusOK, messages)
 }
