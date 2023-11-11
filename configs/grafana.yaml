@@ -21,6 +21,7 @@ datasources:
     datasources:
       - name: Prometheus
         type: prometheus
+        uid: prometheus
         url: http://kube-prometheus-stack-prometheus:9090
         isDefault: true
       - name: Loki
@@ -33,6 +34,8 @@ datasources:
         jsonData:
           tracesToLogsV2:
             datasourceUid: "loki"
+          serviceMap:
+            datasourceUid: prometheus
       - name: Pyroscope
         type: phlare
         url: http://pyroscope:4040/

@@ -1,9 +1,9 @@
-metricsGenerator:
-  enabled: true
-  remoteWriteUrl: "http://kube-prometheus-stack-prometheus:9090/api/v1/write"
-
-serviceMonitor:
-  enabled: true
+tempo:
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://kube-prometheus-stack-prometheus:9090/api/v1/write"
+  serviceMonitor:
+    enabled: true
 
 storage:
   trace:

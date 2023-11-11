@@ -8,6 +8,7 @@ prometheus:
     tls: []
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
+    enableRemoteWriteReceiver: true
     retention: 7d
 
 grafana:
