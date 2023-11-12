@@ -24,9 +24,6 @@ postgresql:
   storageSize: 1Gi
 
 ingress:
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/enable-opentelemetry: "true"
   enabled: true
   host: wall-api.local  # Change to your desired host
   tls:

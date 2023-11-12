@@ -4,17 +4,6 @@ resource "kubernetes_namespace" "tools_namespace" {
   }
 }
 
-resource "helm_release" "ingress-nginx" {
-  name = "ingress-nginx"
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart = "ingress-nginx"
-  
-  namespace = "ingress-nginx"
-  values = [
-    "${file("${path.module}/configs/ingress-nginx.yaml")}"
-  ]
-}
-
 resource "helm_release" "kube-prometheus-stack" {
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
@@ -150,13 +139,6 @@ resource "kubernetes_namespace" "apps_namespace" {
     name = "apps"
   }
 }
-
-resource "kubernetes_namespace" "ingress-nginx" {
-  metadata {
-    name = "ingress-nginx"
-  }
-}
-
 
 resource "helm_release" "wall_api" {
   name      = "wall-api"

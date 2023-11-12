@@ -1,12 +1,10 @@
 controller:
-  admissionWebhook:
-    enabled: false
   watchIngressWithoutClass: true
   ingressClassResource:
     default: true
-  service:
-    externalIPs:
-      - 192.168.49.2
+  # service:
+  #   externalIPs:
+  #     - 192.168.49.2
   config:
     hsts: "false"
     otlp-collector-host: "grafana-agent.monitoring"
