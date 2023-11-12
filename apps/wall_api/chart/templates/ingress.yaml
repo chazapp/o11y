@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}
   annotations:
-    kubernetes.io/ingress.class: nginx
+{{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:
   {{- if .Values.ingress.tls }}
   tls:
