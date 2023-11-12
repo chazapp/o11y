@@ -5,7 +5,7 @@ A fully configured observability stack based on Grafana's tools.
 
 ## Contents
 
-A Terraform module that deploys to a Kubernetes cluster the following tools:
+A Terraform project that deploys to a Minikube cluster the following tools:
   - Grafana
   - Grafana-Agent
   - Kube-Prometheus-Stack
@@ -16,22 +16,17 @@ A Terraform module that deploys to a Kubernetes cluster the following tools:
   - Pyroscope
 
 It also deploys the following example services:
-  - The WallAPI, a REST API written in Golang, auto-instrumented via Bayla and profiled by Pyroscope via /pprof
-  - The WallClient, a front-end client written in React, auto-instrumented client-side via Faro -> Grafana Agent -> Tempo & Loki
+  - The WallAPI, a REST API written in Golang instrumented via OpenTelemetrySDK and profiled by Pyroscope via /pprof
+  - The WallClient, a front-end client written in React, auto-instrumented via Faro -> Grafana Agent -> Tempo & Loki
 
 
 
 ## Minikube
 
-The Terraform module provides default configuration values for all tools that are deployed within it. These
-are tailored for usage in a Minikube cluster, of which an application of the module is available in it own folder.
-
-
-To test the complete stack, create a Minikube cluster, enable the `ingress` addon, then apply with Terraform
+To test the complete stack, create a Minikube cluster then apply with Terraform
 
 ```
 $ minikube start
-$ minikube addons enable ingress
 $ terraform apply
 ```
 
