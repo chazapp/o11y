@@ -1,4 +1,6 @@
 controller:
+  admissionWebhook:
+    enabled: false
   watchIngressWithoutClass: true
   ingressClassResource:
     default: true
@@ -7,7 +9,6 @@ controller:
       - 192.168.49.2
   config:
     hsts: "false"
-    enable-opentelemetry: "true"
     otlp-collector-host: "grafana-agent.monitoring"
     otlp-collector-port: "4317"
     otel-max-queuesize: "2048"
