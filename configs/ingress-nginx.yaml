@@ -1,0 +1,21 @@
+controller:
+  watchIngressWithoutClass: true
+  ingressClassResource:
+    default: true
+  service:
+    externalIPs:
+      - 192.168.49.2
+  config:
+    hsts: "false"
+    enable-opentelemetry: "true"
+    otlp-collector-host: "grafana-agent.monitoring"
+    otlp-collector-port: "4317"
+    otel-max-queuesize: "2048"
+    otel-schedule-dellay-milis: "5000"
+    otel-max-export-batch-size: "512"
+    otel-service-name: "ingress-nginx"
+    otel-sampler: "AlwaysOn"
+    otel-sampler-ratio: "1.0"
+
+  opentelemetry:
+    enabled: true
