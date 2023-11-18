@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.11.0",
     "@grafana/faro-react": "^1.2.3",
     "@grafana/faro-web-tracing": "^1.2.3",
+    "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.15",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

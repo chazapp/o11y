@@ -2,16 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Form from './Form';
-import { Stage, Layer, Text } from 'react-konva';
 import { WallMessage } from './types';
 import { getRandomInt, httpUrlToWebSocketUrl } from './utils';
+import MessageStream from './MessageStream';
 
 function App(props: {apiUrl: string}) {
   const { apiUrl } = props;
   const [wallMessages, setWallMessages] = useState<WallMessage[]>([]);
   const [webSocket, setWebSocket] = useState<WebSocket | undefined>(undefined);
+
 
   useEffect(() => {
     if (webSocket) {
@@ -22,7 +23,7 @@ function App(props: {apiUrl: string}) {
       const { message, username, id } = JSON.parse(event.data);
 
       console.error("Received event message!");
-      const wallMessage = {
+      const newMessage = {
         message,
         username,
         id,
@@ -30,63 +31,38 @@ function App(props: {apiUrl: string}) {
         posY: getRandomInt(0, window.innerHeight),
         opacity: 1,
       };
-
-      // Add the message to the state
-      setWallMessages((oldArray) => [...oldArray, wallMessage]);
-
-      // Schedule a setInterval to gradually reduce the opacity over 10 seconds
-      const interval = 100; // Update opacity every 100 milliseconds
-      const duration = 10000; 
-
-      const opacityInterval = setInterval(() => {
-        setWallMessages((oldMessages) =>
-          oldMessages.map((oldMessage) =>
-            oldMessage.id === wallMessage.id
-              ? { ...oldMessage, opacity: oldMessage.opacity - 0.1  }
-              : oldMessage
-          )
-        )
-      }, interval);
-
-      // Clear the interval once opacity reaches 0
-      setTimeout(() => {
-        clearInterval(opacityInterval);
-        setWallMessages((oldMessages) =>
-          oldMessages.filter((oldMessage) => oldMessage.id !== wallMessage.id)
-        );
-      }, duration);
-    
+      // Add the message to the state while retaining max 50 elements
+      setWallMessages((oldArray) => [...oldArray.slice(wallMessages.length - 49), newMessage])
     }
     setWebSocket(ws);
-  }, [apiUrl, webSocket]);
+  }, [apiUrl, webSocket, wallMessages]);
   
+
+  useEffect(() => {
+
+  }, [wallMessages])
+
   return (
     <div className="App">
-      <Stage style={{position: "absolute"}} width={window.innerWidth} height={window.innerHeight}>
-        <Layer >
-          {
-            wallMessages.map((wallMessage) => {
-              return (
-                <Text
-                  key={wallMessage.id} 
-                  text={wallMessage.message}
-                  x={wallMessage.posX}
-                  y={window.innerHeight/2}
-                  opacity={wallMessage.opacity < 0 ? 0 : wallMessage.opacity}
-                  fill="red"
-                  fontSize={50}
-              />
-              )
-            })
-          }
-        </Layer>
-      </Stage>
       <Box sx={{
+        display: "flex",
+        flexDirection: "row"
+      }}>
+        <Box sx={{
+            marginTop: "1%",
+            width: "500px",
+          }}>
+            <Form />
+            <Typography variant="h1">{wallMessages.length}</Typography>
+        </Box>
+        <Box sx={{
           marginTop: "1%",
-          width: "500px",
+          width: "50%"
         }}>
-          <Form />
+          <MessageStream messages={wallMessages}/>
+        </Box>
       </Box>
+      
     </div>
   );
 }
