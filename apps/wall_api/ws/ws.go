@@ -1,10 +1,11 @@
-package main
+package ws
 
 import (
 	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/chazapp/o11/apps/wall_api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
@@ -20,26 +21,26 @@ var wsupgrader = websocket.Upgrader{
 type Client struct {
 	hub  *Hub
 	conn *websocket.Conn
-	send chan WallMessage
+	send chan models.WallMessage
 }
 
 type Hub struct {
 	clients    map[*Client]bool
-	broadcast  chan WallMessage
+	Broadcast  chan models.WallMessage
 	register   chan *Client
 	unregister chan *Client
 }
 
-func newHub() *Hub {
+func NewHub() *Hub {
 	return &Hub{
-		broadcast:  make(chan WallMessage),
+		Broadcast:  make(chan models.WallMessage),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		clients:    make(map[*Client]bool),
 	}
 }
 
-func (h *Hub) run() {
+func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.register:
@@ -47,7 +48,7 @@ func (h *Hub) run() {
 		case client := <-h.unregister:
 			delete(h.clients, client)
 			close(client.send)
-		case message := <-h.broadcast:
+		case message := <-h.Broadcast:
 			for client := range h.clients {
 				client.send <- message
 			}
@@ -81,13 +82,13 @@ func (c *Client) writePump() {
 	}
 }
 
-func wsHandler(c *gin.Context) {
+func (h *Hub) WsHandler(c *gin.Context) {
 	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	client := &Client{hub: wsHub, conn: conn, send: make(chan WallMessage)}
+	client := &Client{hub: h, conn: conn, send: make(chan models.WallMessage)}
 	client.hub.register <- client
 
 	go client.writePump()

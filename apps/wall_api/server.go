@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strconv"
-	"time"
 
+	"github.com/chazapp/o11/apps/wall_api/api"
+	"github.com/chazapp/o11/apps/wall_api/models"
+	"github.com/chazapp/o11/apps/wall_api/ws"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
@@ -22,25 +23,20 @@ import (
 	"gorm.io/plugin/opentelemetry/tracing"
 )
 
-type WallMessage struct {
-	ID                uint      `gorm:"primary_key" json:"id"`
-	Username          string    `json:"username"`
-	Message           string    `json:"message"`
-	CreationTimestamp time.Time `json:"creationTimestamp"`
-}
-
 var db *gorm.DB
 
-var wsHub = newHub()
-
 func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []string, otlpEndpoint string) (err error) {
-	initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
+	db := initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
 
 	r := gin.New()
 	r.Use(otelgin.Middleware("wall-api"))
 	r.Use(gin.Recovery())
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+
+	wsHub := ws.NewHub()
+
+	mr := api.NewMessageRouter(db, wsHub)
 
 	// ToDo: figure out structured Logging
 	r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
@@ -54,12 +50,12 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []s
 		AllowHeaders:     []string{"*"},
 	}))
 
-	r.POST("/message", createMessage)
-	r.GET("/message/:id", getMessage)
-	r.GET("/messages", getMessages)
+	r.POST("/message", mr.CreateMessage)
+	r.GET("/message/:id", mr.GetMessage)
+	r.GET("/messages", mr.GetMessages)
 
-	go wsHub.run()
-	r.GET("/ws", wsHandler)
+	go wsHub.Run()
+	r.GET("/ws", wsHub.WsHandler)
 
 	// Start /pprof, /metric and /health on port 8081
 	optsRouter := gin.New()
@@ -74,7 +70,7 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []s
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
 
-func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) {
+func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) (db *gorm.DB) {
 	dbURI := fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=disable", dbUser, dbPassword, dbHost, dbName)
 	var err error
 	db, err = gorm.Open(postgres.Open(dbURI), &gorm.Config{})
@@ -87,47 +83,8 @@ func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) {
 		}
 	}
 	// Auto-migrate the schema
-	db.AutoMigrate(&WallMessage{})
-}
-
-func createMessage(c *gin.Context) {
-	var message WallMessage
-	if err := c.ShouldBindJSON(&message); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	message.CreationTimestamp = time.Now()
-	db.WithContext(c.Request.Context()).Create(&message)
-	wsHub.broadcast <- message
-	c.JSON(http.StatusCreated, message)
-}
-
-func getMessage(c *gin.Context) {
-	id := c.Param("id")
-	var message WallMessage
-	if err := db.WithContext(c.Request.Context()).Where("id = ?", id).First(&message).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Message not found"})
-		return
-	}
-	c.JSON(http.StatusOK, message)
-}
-
-func getMessages(c *gin.Context) {
-	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "Invalid limit"})
-		return
-	}
-	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "Invalid offset"})
-		return
-	}
-	var messages []WallMessage
-	db.WithContext(c.Request.Context()).Limit(limit).Offset(offset).Find(&messages)
-
-	c.JSON(http.StatusOK, messages)
+	db.AutoMigrate(&models.WallMessage{})
+	return db
 }
 
 func healthCheck(c *gin.Context) {
