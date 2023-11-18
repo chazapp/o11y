@@ -23,8 +23,6 @@ import (
 	"gorm.io/plugin/opentelemetry/tracing"
 )
 
-var db *gorm.DB
-
 func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []string, otlpEndpoint string) (err error) {
 	db := initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
 
