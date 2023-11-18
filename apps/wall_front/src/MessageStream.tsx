@@ -9,9 +9,9 @@ export default function MessageStream(props: {messages: WallMessage[]}) {
     return (
         <Box>
         {
-            orderedMessages.map((message) => {
+            orderedMessages.map((message, index) => {
                 return (
-                    <MessageBox key={message.id} message={message}></MessageBox>
+                    <MessageBox key={index} message={message}></MessageBox>
                 )
             })
         }
