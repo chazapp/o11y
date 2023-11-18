@@ -82,6 +82,13 @@ func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) (db 
 	}
 	// Auto-migrate the schema
 	db.AutoMigrate(&models.WallMessage{})
+
+	// Limit connection pool
+	sqlDb, err := db.DB()
+	if err != nil {
+		log.Fatal().Err(err)
+	}
+	sqlDb.SetMaxOpenConns(100)
 	return db
 }
 
