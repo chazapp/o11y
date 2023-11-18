@@ -143,13 +143,13 @@ resource "kubernetes_namespace" "apps_namespace" {
 resource "helm_release" "wall_api" {
   name      = "wall-api"
   chart = "${path.module}/apps/wall_api/chart"
-  version = "0.1.0"
+  version = "2.0.0"
   namespace = "apps"
 }
 
 resource "helm_release" "wall_front" {
   name      = "wall-front"
   chart = "${path.module}/apps/wall_front/chart"
-  version = "1.1.0"
+  version = "2.0.0"
   namespace = "apps"
 }
