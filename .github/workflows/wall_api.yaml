@@ -2,7 +2,7 @@ name: WallAPI
 on:
   push:
     paths:
-      - apps/wall_api
+      - apps/wall_api/
 jobs:
   tests:
     runs-on: ubuntu-latest
