@@ -10,6 +10,8 @@ import (
 
 func main() {
 	app := &cli.App{
+		Name:  "wall-api",
+		Usage: "An API for the Wall Application",
 		Commands: []*cli.Command{
 			{
 				Name:  "run",
