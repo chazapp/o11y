@@ -5,7 +5,7 @@ import './App.css';
 import { Box, Typography } from "@mui/material";
 import Form from './Form';
 import { WallMessage } from './types';
-import { getRandomInt, httpUrlToWebSocketUrl } from './utils';
+import { httpUrlToWebSocketUrl } from './utils';
 import MessageStream from './MessageStream';
 
 function App(props: {apiUrl: string}) {
