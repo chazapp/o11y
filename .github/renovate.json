@@ -1,5 +1,11 @@
 {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "branchPrefix": "renovate/",
+    "dependencyDashboardTitle": "Dependency Dashboard",
+    "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
+    "platform": "github",
     "labels": ["dependencies"],
+    "repositories": ["chazapp/o11y"],
     "packageRules": [
         {
             "matchFileNames": ["package.json"]
