@@ -42,8 +42,14 @@ func main() {
 					&cli.IntFlag{
 						Name:    "port",
 						Value:   8080,
-						EnvVars: []string{"PG_DBNAME"},
+						EnvVars: []string{"PORT"},
 						Usage:   "Port of the API Server",
+					},
+					&cli.IntFlag{
+						Name:    "opsPort",
+						Value:   8081,
+						EnvVars: []string{"OPS_PORT"},
+						Usage:   "Port of the Ops API Server (Healthcheck, Readiness, Metrics, pprof)",
 					},
 					&cli.StringSliceFlag{
 						Name:    "allowedOrigins",
@@ -66,12 +72,13 @@ func main() {
 					dbHost := c.String("dbHost")
 					dbName := c.String("dbName")
 					port := c.Int("port")
+					opsPort := c.Int("opsPort")
 					allowedOrigins := c.StringSlice("allowedOrigins")
 					otlpEndpoint := c.String("otlp")
 					if otlpEndpoint != "" {
 						initProvider(otlpEndpoint)
 					}
-					return API(dbUser, dbPassword, dbHost, dbName, port, allowedOrigins, otlpEndpoint)
+					return API(dbUser, dbPassword, dbHost, dbName, port, opsPort, allowedOrigins, otlpEndpoint)
 				},
 			},
 		},

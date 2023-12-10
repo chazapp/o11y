@@ -1,0 +1,21 @@
+name: WallAPI
+on:
+  push:
+    paths:
+      - apps/wall_api
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        run: go build -o wall_api
+        working-directory: apps/wall_api/
+      - name: Test
+        run: go test ./... -cover
+        working-directory: apps/wall_api

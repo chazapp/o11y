@@ -12,7 +12,6 @@ import (
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	_ "github.com/grafana/pyroscope-go/godeltaprof/http/pprof"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -23,16 +22,12 @@ import (
 	"gorm.io/plugin/opentelemetry/tracing"
 )
 
-func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []string, otlpEndpoint string) (err error) {
-	db := initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
-
+func newWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.Engine {
 	r := gin.New()
 	r.Use(otelgin.Middleware("wall-api"))
 	r.Use(gin.Recovery())
 
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
-
-	wsHub := ws.NewHub()
 
 	mr := api.NewMessageRouter(db, wsHub)
 
@@ -51,20 +46,26 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int, allowedOrigins []s
 	r.POST("/message", mr.CreateMessage)
 	r.GET("/message/:id", mr.GetMessage)
 	r.GET("/messages", mr.GetMessages)
-
-	go wsHub.Run()
 	r.GET("/ws", wsHub.WsHandler)
 
-	// Start /pprof, /metric and /health on port 8081
-	optsRouter := gin.New()
-	pprof.Register(optsRouter)
-	optsRouter.GET("/metrics", gin.WrapH(promhttp.Handler()))
-	optsRouter.GET("/health", healthCheck)
+	return r
+}
 
-	go optsRouter.Run("0.0.0.0:8081")
+func newOpsEngine() *gin.Engine {
+	r := gin.New()
+	pprof.Register(r)
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	r.GET("/health", healthCheck)
+	return r
+}
 
-	// Emit received message via WebSocket Broadcast
-	// Start the server
+func API(dbUser, dbPassword, dbHost, dbName string, port int, opsPort int, allowedOrigins []string, otlpEndpoint string) (err error) {
+	db := initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
+	wsHub := ws.NewHub()
+	go wsHub.Run()
+	r := newWallAPIEngine(db, wsHub, allowedOrigins)
+	opsRouter := newOpsEngine()
+	go opsRouter.Run(fmt.Sprintf("0.0.0.0:%d", opsPort))
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
 
