@@ -1,0 +1,9 @@
+{
+    "labels": ["dependencies"],
+    "packageRules": [
+        {
+            "matchFileNames": ["package.json"]
+        }
+    ],
+    "dependencyDashboard": true
+}
