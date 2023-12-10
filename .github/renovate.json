@@ -6,10 +6,5 @@
     "platform": "github",
     "labels": ["dependencies"],
     "repositories": ["chazapp/o11y"],
-    "packageRules": [
-        {
-            "matchFileNames": ["package.json"]
-        }
-    ],
     "dependencyDashboard": true
 }
