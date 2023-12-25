@@ -1,6 +1,6 @@
 # Wall-API
 
-[![WallAPI](https://github.com/chazapp/o11y/actions/workflows/wall_api.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/wall_api.yaml)  
+[![WallAPI](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml)  
 
 ## Features
 
