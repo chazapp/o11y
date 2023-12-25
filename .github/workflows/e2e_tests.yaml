@@ -7,6 +7,15 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: wallapi
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: foobar
+        ports:
+          - 5432:5432
     steps:
       - name: Setup Golang
         uses: actions/setup-go@v4
@@ -18,9 +27,27 @@ jobs:
           node-version: latest
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Build API
         run: go build -o wall_api
         working-directory: apps/wall_api/
+      - name: Run API in backogrund
+        run: ./wall_api.exe run --dbHost postgres --dbUser user --dbPassword foobar --dbName wallapi --allowedOrigins http://127.0.0.1:3000,http://localhost:3000 &
+        working-directory: apps/wall_api/
+    
       - name: Build front-end
         run: yarn install && npm run build
         working-directory: apps/wall_front/
+      - name: Run front-end in background
+        run: yarn start &
+        working-directory: apps/wall_front/
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run Playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
