@@ -121,7 +121,7 @@ resource "helm_release" "pyroscope" {
   name       = "pyroscope"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "pyroscope"
-  version    = "1.1.0"
+  version    = "1.3.1"
 
   namespace  = var.tools_namespace
 
