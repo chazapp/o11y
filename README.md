@@ -1,5 +1,5 @@
 # o11y
-[![Test installation in Minikube](https://github.com/chazapp/o11y/actions/workflows/tests.yml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/tests.yml)  
+[![Test installation in Minikube](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yml)  
 
 A fully configured observability stack based on Grafana's tools.
 
