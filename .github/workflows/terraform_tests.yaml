@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - configs/**
-      - *.tf
+      - '**.tf'
 jobs:
   tests:
     runs-on: ubuntu-latest
