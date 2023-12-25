@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - apps/**
+      - .github/workflows/e2e_tests.yaml
 
 jobs:
   tests:
