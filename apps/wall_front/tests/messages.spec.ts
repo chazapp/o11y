@@ -21,4 +21,5 @@ test('sends a message and sees it in stream', async ({ page }) => {
   // Expect MessageStream to be populated
   // Expects page to have a heading with the name of Installation.
   await expect(page.getByText("This is automated via Playwright")).toBeVisible();
+
 });
