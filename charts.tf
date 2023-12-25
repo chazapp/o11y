@@ -8,7 +8,7 @@ resource "helm_release" "kube-prometheus-stack" {
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
-  version    = "51.8.1"
+  version    = "51.10.0"
   
   namespace  = var.tools_namespace
 
@@ -22,7 +22,7 @@ resource "helm_release" "grafana" {
   name       = "grafana"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "grafana"
-  version    = "6.60.6"
+  version    = "6.61.2"
 
   namespace  = var.tools_namespace
 
@@ -38,7 +38,7 @@ resource "helm_release" "grafana-agent" {
   name       = "grafana-agent"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "grafana-agent"
-  version    = "0.26.0"
+  version    = "0.29.0"
 
   namespace  = var.tools_namespace
 
@@ -55,7 +55,7 @@ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "loki"
-  version    = "5.31.0"
+  version    = "5.41.4"
 
   namespace  = var.tools_namespace
 
@@ -104,7 +104,7 @@ resource "helm_release" "tempo" {
   name       = "tempo"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "tempo"
-  version    = " 1.6.2"
+  version    = "1.7.1"
 
   namespace  = var.tools_namespace
 
@@ -121,7 +121,7 @@ resource "helm_release" "pyroscope" {
   name       = "pyroscope"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "pyroscope"
-  version    = "1.1.0"
+  version    = "1.3.1"
 
   namespace  = var.tools_namespace
 
