@@ -1,5 +1,9 @@
 name: Test installation in Minikube
-on: [push]
+on:
+  push:
+    paths:
+      - configs/**
+      - *.tf
 jobs:
   tests:
     runs-on: ubuntu-latest
