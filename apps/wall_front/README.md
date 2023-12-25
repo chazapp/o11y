@@ -30,6 +30,17 @@ webpack compiled successfully
 No issues found.
 ```
 
+## End-to-End Tests
+
+A Playwright test suite is available to E2E test both front-end client and API.
+Start up a database, API, `npm start`, then run the test suite
+
+```bash
+$ npx playwright test
+<...>
+
+```
+
 ## Production build
 
 This repository contains a Dockerfile that will make a production build
