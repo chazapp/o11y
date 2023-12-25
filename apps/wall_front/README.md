@@ -6,13 +6,28 @@ Features:
 - Form creating Messages for the WallAPI
 - WebSocket listening for created messages and drawing them on a canvas element via Konva
 
-
 ## Usage
 
 ```bash
 $ yarn install
+yarn install v1.22.19
+[1/4] Resolving packages...
+...
 $ echo "REACT_APP_API_URL=<http://your.api.endpoint>" >> .env
+...
 $ yarn start
+Compiled successfully!
+
+You can now view wall_front in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.1.10:3000
+
+Note that the development build is not optimized.
+To create a production build, use yarn build.
+
+webpack compiled successfully
+No issues found.
 ```
 
 ## Production build
