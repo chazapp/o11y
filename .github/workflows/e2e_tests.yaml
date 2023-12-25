@@ -22,5 +22,5 @@ jobs:
         run: go build -o wall_api
         working-directory: apps/wall_api/
       - name: Build front-end
-        run: npm run build
+        run: yarn install && npm run build
         working-directory: apps/wall_front/
