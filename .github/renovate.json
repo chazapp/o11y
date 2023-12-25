@@ -6,5 +6,12 @@
     "platform": "github",
     "labels": ["dependencies"],
     "repositories": ["chazapp/o11y"],
-    "dependencyDashboard": true
+    "dependencyDashboard": true,
+    "packageRules": [
+        {
+          "description": "Automerge non-major updates",
+          "matchUpdateTypes": ["minor", "patch"],
+          "automerge": true
+        }
+    ]
 }
