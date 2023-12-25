@@ -14,8 +14,11 @@ jobs:
           POSTGRES_DB: wallapi
           POSTGRES_USER: user
           POSTGRES_PASSWORD: foobar
-        ports:
-          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Setup Golang
         uses: actions/setup-go@v4
@@ -31,7 +34,7 @@ jobs:
       - name: Build API
         run: go build -o wall_api
         working-directory: apps/wall_api/
-      - name: Run API in backogrund
+      - name: Run API in background
         run: ./wall_api run --dbHost postgres --dbUser user --dbPassword foobar --dbName wallapi --allowedOrigins http://127.0.0.1:3000,http://localhost:3000 &
         working-directory: apps/wall_api/
     
