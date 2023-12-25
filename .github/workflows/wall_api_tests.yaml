@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - apps/wall_api/**
+      - .github/workflows/wall_api_tests.yaml
 jobs:
   tests:
     runs-on: ubuntu-latest
