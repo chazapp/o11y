@@ -1,5 +1,6 @@
 name: WallAPI
 on:
+  merge_group:
   push:
     paths:
       - apps/wall_api/**

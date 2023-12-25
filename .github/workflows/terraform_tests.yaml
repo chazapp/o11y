@@ -1,9 +1,11 @@
 name: Test installation in Minikube
 on:
+  merge_group:
   push:
     paths:
       - configs/**
       - '**.tf'
+      - .github/workflows/terraform_tests.yaml
 jobs:
   tests:
     runs-on: ubuntu-latest
