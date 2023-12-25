@@ -42,7 +42,7 @@ jobs:
         working-directory: apps/wall_api/
     
       - name: Build front-end
-        run: yarn install && npm run build
+        run: yarn install
         working-directory: apps/wall_front/
       - name: Run front-end in background
         run: yarn start &
