@@ -9,7 +9,7 @@ import axios from "axios";
 
 
 const API_URL = window.env && window.env.API_URL ? window.env.API_URL : process.env.REACT_APP_API_URL;
-const FARO_URL = window.env && window.env.API_URL ? window.env.FARO_URL : process.env.REACT_APP_FARO_URL;
+const FARO_URL = window.env && window.env.FARO_URL ? window.env.FARO_URL : process.env.REACT_APP_FARO_URL;
 const VERSION = window.env && window.env.VERSION ? window.env.VERSION : "dev";
 
 if (API_URL === undefined) {
