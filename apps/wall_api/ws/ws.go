@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/chazapp/o11/apps/wall_api/metrics"
 	"github.com/chazapp/o11/apps/wall_api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -25,18 +26,17 @@ type Client struct {
 }
 
 type Hub struct {
-	clients    map[*Client]bool
-	Broadcast  chan models.WallMessage
-	register   chan *Client
-	unregister chan *Client
+	clients   map[*Client]bool
+	Broadcast chan models.WallMessage
+	register  chan *Client
 }
 
 func NewHub() *Hub {
+	metrics.WSClients.Set(0)
 	return &Hub{
-		Broadcast:  make(chan models.WallMessage),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		clients:    make(map[*Client]bool),
+		Broadcast: make(chan models.WallMessage),
+		register:  make(chan *Client),
+		clients:   make(map[*Client]bool),
 	}
 }
 
@@ -44,13 +44,16 @@ func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.register:
+			metrics.WSClients.Inc()
 			h.clients[client] = true
-		case client := <-h.unregister:
-			delete(h.clients, client)
-			close(client.send)
 		case message := <-h.Broadcast:
 			for client := range h.clients {
-				client.send <- message
+				select {
+				case client.send <- message:
+				default:
+					close(client.send)
+					delete(h.clients, client)
+				}
 			}
 		}
 
@@ -62,6 +65,7 @@ func (c *Client) writePump() {
 	defer func() {
 		ticker.Stop()
 		c.conn.Close()
+		metrics.WSClients.Dec()
 	}()
 	for {
 		select {
@@ -72,7 +76,9 @@ func (c *Client) writePump() {
 				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-			c.conn.WriteJSON(message)
+			if err := c.conn.WriteJSON(message); err != nil {
+				return
+			}
 		case <-ticker.C:
 			c.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
