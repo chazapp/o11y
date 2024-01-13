@@ -5,6 +5,9 @@ on:
       - 'v*.*.*'
 jobs:
   build-wall-front:
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,6 +61,9 @@ jobs:
 
   build-wall-api:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2      
