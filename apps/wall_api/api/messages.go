@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/chazapp/o11/apps/wall_api/metrics"
 	"github.com/chazapp/o11/apps/wall_api/models"
 	"github.com/chazapp/o11/apps/wall_api/ws"
 	"github.com/gin-gonic/gin"
@@ -34,6 +35,7 @@ func (r *MessageRouter) CreateMessage(c *gin.Context) {
 	message.CreationTimestamp = time.Now()
 	r.db.WithContext(c.Request.Context()).Create(&message)
 	r.wsHub.Broadcast <- message
+	metrics.ProcessedMessages.Inc()
 	c.JSON(http.StatusCreated, message)
 }
 

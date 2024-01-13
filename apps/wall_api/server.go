@@ -42,7 +42,6 @@ func newWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"*"},
 	}))
-
 	r.POST("/message", mr.CreateMessage)
 	r.GET("/message/:id", mr.GetMessage)
 	r.GET("/messages", mr.GetMessages)
