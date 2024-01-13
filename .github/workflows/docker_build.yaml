@@ -96,7 +96,7 @@ jobs:
       - name: Build and push Docker 
         uses: docker/build-push-action@v5
         with:
-          context: ./apps/wall_front/
+          context: ./apps/wall_api/
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
