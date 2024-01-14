@@ -1,5 +1,0 @@
-apiVersion: v2
-name: wall-front
-description: A Helm chart for deploying the WallFront application
-version: 2.0.0
-appVersion: 2.0.0
