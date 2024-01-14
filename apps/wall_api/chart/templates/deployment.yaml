@@ -12,35 +12,27 @@ spec:
       labels:
         app: {{ .Release.Name }}
     spec:
-      shareProcessNamespace: true
       containers:
       - name: {{ .Release.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.service.port }}
+        - name: http 
+          containerPort: {{ .Values.service.port }}
+        - name: metrics
+          containerPort: 8081
         args:
-        - "run"
-        - "--port=8080"
-        - "--dbUser={{ .Values.postgresql.user }}"  # PostgreSQL user from Helm values
-        - "--dbPassword={{ .Values.postgresql.password }}"  # PostgreSQL password from Helm values
-        - "--dbHost={{ .Values.postgresql.serviceName }}"  # Use PostgreSQL service DNS as host
-        - "--dbName={{ .Values.postgresql.database }}"  # PostgreSQL database from Helm values
-        - "--allowedOrigins={{ .Values.config.allowedOrigins }}"
-        - "--otlp={{ .Values.config.otlpEndpoint}}"
-      {{ if .Values.beyla.enabled }}
-      - name: {{ .Release.Name }}-beyla
-        image: grafana/beyla:latest
-        securityContext: # Privileges are required to install the eBPF probes
-          runAsUser: 0
-          capabilities:
-            add:
-              - SYS_ADMIN
-        env:
-          - name: OPEN_PORT # The internal port of the goblog application container
-            value: "8080"
-          - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: "http://grafana-agent.monitoring:4317"
-          - name: PRINT_TRACES
-            value: "true"
-      {{- end -}}
+          - "run"
+          - "--port={{ .Values.service.port }}"
+          - "--dbUser={{ .Values.postgresql.user }}"  # PostgreSQL user from Helm values
+          - "--dbPassword={{ .Values.postgresql.password }}"  # PostgreSQL password from Helm values
+          - "--dbHost={{ .Values.postgresql.serviceName }}"  # Use PostgreSQL service DNS as host
+          - "--dbName={{ .Values.postgresql.database }}"  # PostgreSQL database from Helm values
+          - "--allowedOrigins={{ .Values.config.allowedOrigins }}"
+          - "--otlp={{ .Values.config.otlpEndpoint}}"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          initialDelaySeconds: 3
+          periodSeconds: 10

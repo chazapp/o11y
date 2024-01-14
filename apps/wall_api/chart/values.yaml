@@ -6,13 +6,16 @@ config:
 
 image:
   repository: ghcr.io/chazapp/o11y/wall_api
-  tag: 2.0.1
+  tag: 2.1.0
   pullPolicy: IfNotPresent
 
 service:
   name: wall-api
   type: ClusterIP
   port: 8080
+
+serviceMonitor:
+  enabled: true
 
 postgresql:
   name: postgresql
@@ -31,5 +34,3 @@ ingress:
     hosts:
       - wall-api.local
 
-beyla:
-  enabled: false
