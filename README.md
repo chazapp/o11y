@@ -1,35 +1,37 @@
 # o11y
 [![Test installation in Minikube](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yaml)
 
+A DevOps shop showcase of observability in action.  
 
-
-A fully configured observability stack based on Grafana's tools.
+[Navigate this repository with the blog article !](https://blog.chaz.pro/posts/2023-11-18/wall-experience)
 
 ## Contents
 
 A Terraform project that deploys to a Minikube cluster the following tools:
-  - Grafana
-  - Grafana-Agent
-  - Kube-Prometheus-Stack
-  - Loki
-  - Promtail
-  - Tempo
-  - Minio
-  - Pyroscope
+
+- Grafana
+- Grafana-Agent
+- Kube-Prometheus-Stack
+- Loki
+- Promtail
+- Tempo
+- Minio
+- Pyroscope
 
 It also deploys the following example services:
-  - The WallAPI, a REST API written in Golang instrumented via OpenTelemetrySDK and profiled by Pyroscope via /pprof
-  - The WallClient, a front-end client written in React, auto-instrumented via Faro -> Grafana Agent -> Tempo & Loki
 
-
+- The WallAPI, a REST API written in Golang instrumented via OpenTelemetrySDK and profiled by Pyroscope via /pprof
+- The WallClient, a front-end client written in React, auto-instrumented via Faro -> Grafana Agent -> Tempo & Loki
 
 ## Minikube
 
 To test the complete stack, create a Minikube cluster then apply with Terraform
 
-```
+``` bash
 $ minikube start
+...
 $ terraform apply
+...
 ```
 
 Once applied, you may add the Ingresses for the various services to your `/etc/hosts` file
