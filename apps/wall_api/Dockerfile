@@ -5,7 +5,7 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 go build -o wall_api
 
-FROM alpine:3.19.0
+FROM alpine:3.19.1
 WORKDIR /app
 COPY --from=builder /app /app
 RUN adduser -D -H -h /app appuser
