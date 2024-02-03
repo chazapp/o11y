@@ -87,7 +87,7 @@ resource "helm_release" "promtail" {
   name       = "promtail"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "promtail"
-  version    = "6.15.4"
+  version    = "6.15.5"
 
   namespace  = var.tools_namespace
 
