@@ -5,7 +5,7 @@
 
 ## Features
 
-- A CRUD REST API for the `Message` object
+- A CRUD API for Messages
 - ORM Layer to PostgreSQL via `go-orm`
 - A WebSocket server that emits `Message` objects on reception of `POST /message`
 

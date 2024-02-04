@@ -7,7 +7,7 @@ import Form from '../Form'
 import MessageBox from '../MessageBox';
 import MessageStream from '../MessageStream';
 
-describe('Login component tests', () => {
+describe('Individual component render testing', () => {
 
   beforeEach(() => {
     // write someting before each test
