@@ -1,0 +1,33 @@
+name: Wall-front component testing
+on:
+  merge_group:
+  push:
+    paths:
+      - apps/wall_front/**
+      - .github/workflows/wall_front_tests.yaml
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build front-end
+        run: yarn install
+        working-directory: apps/wall_front/
+
+      - name: Tests front-end
+        working-directory: apps/wall_front/
+        run: yarn test
+
+      - name: Upload app coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          working-directory: apps/wall_front/
+          flags: wall-front
+          token: ${{ secrets.CODECOV_TOKEN }}
