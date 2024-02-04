@@ -55,7 +55,7 @@ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "loki"
-  version    = "5.41.4"
+  version    = "5.41.8"
 
   namespace  = var.tools_namespace
 
@@ -71,7 +71,7 @@ resource "helm_release" "minio" {
   name       = "minio"
   repository = "https://charts.min.io/"
   chart      = "minio"
-  version    = "5.0.14"
+  version    = "5.0.15"
 
   namespace  = var.tools_namespace
 
@@ -87,7 +87,7 @@ resource "helm_release" "promtail" {
   name       = "promtail"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "promtail"
-  version    = "6.15.3"
+  version    = "6.15.5"
 
   namespace  = var.tools_namespace
 
