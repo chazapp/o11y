@@ -143,7 +143,7 @@ resource "kubernetes_namespace" "apps_namespace" {
 resource "helm_release" "wall_api" {
   name      = "wall-api"
   chart = "${path.module}/apps/wall_api/chart"
-  version = "2.0.0"
+  version = "2.1.1"
   namespace = "apps"
   depends_on = [
     helm_release.kube-prometheus-stack
@@ -153,6 +153,6 @@ resource "helm_release" "wall_api" {
 resource "helm_release" "wall_front" {
   name      = "wall-front"
   chart = "${path.module}/apps/wall_front/chart"
-  version = "2.0.0"
+  version = "2.1.0"
   namespace = "apps"
 }

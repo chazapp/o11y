@@ -21,5 +21,12 @@ jobs:
         run: go build -o wall_api
         working-directory: apps/wall_api/
       - name: Test
-        run: go test ./... -cover
+        run: go test ./... -cover -coverprofile=wall-api.cov
         working-directory: apps/wall_api
+      - name: Upload app coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          working-directory: apps/wall_api/
+          files: wall-api.cov
+          flags: wall-api
+          token: ${{ secrets.CODECOV_TOKEN }}

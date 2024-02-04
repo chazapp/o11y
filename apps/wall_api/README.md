@@ -36,3 +36,15 @@ GLOBAL OPTIONS:
 
 o11y/apps/wall_api$ ./wallapi run --dbHost 127.0.0.1 --dbUser user --dbPassword foobar --port 8080 --dbName wallapi
 ```
+
+Run the test suite:
+
+```bash
+$ go test ./... -cover
+$ go test ./... -cover
+ok      github.com/chazapp/o11/apps/wall_api    0.450s  coverage: 26.4% of statements
+?       github.com/chazapp/o11/apps/wall_api/api        [no test files]
+?       github.com/chazapp/o11/apps/wall_api/metrics    [no test files]
+?       github.com/chazapp/o11/apps/wall_api/models     [no test files]
+?       github.com/chazapp/o11/apps/wall_api/ws [no test files]
+```

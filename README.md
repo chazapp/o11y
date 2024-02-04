@@ -1,4 +1,5 @@
 # o11y
+
 [![Test installation in Minikube](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yaml)
 
 A DevOps shop showcase of observability in action.  
