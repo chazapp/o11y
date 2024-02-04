@@ -4,6 +4,7 @@
     "dependencyDashboardTitle": "Dependency Dashboard",
     "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
     "labels": ["dependencies"],
+    "autodiscover": true,
     "dependencyDashboard": true,
     "packageRules": [
         {
