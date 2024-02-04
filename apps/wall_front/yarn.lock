@@ -1532,15 +1532,6 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
-"@grafana/faro-core@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-core/-/faro-core-1.3.5.tgz#b1262f4e54246456faf924abf569bbed9c126b13"
-  integrity sha512-5DBJDVqzTRh6cHq2usmX1eisyQiJ60gX3TEnRIKMQ3a+uwEDJN5q/Cm4wz3PVk1WH8HimzOPMty3FoFN/zxH9g==
-  dependencies:
-    "@opentelemetry/api" "^1.7.0"
-    "@opentelemetry/otlp-transformer" "^0.45.1"
-    murmurhash-js "^1.0.0"
-
 "@grafana/faro-core@^1.3.7":
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/@grafana/faro-core/-/faro-core-1.3.7.tgz#d0fa9e4513ea74a5defc5568dfa24fa6abe35665"
@@ -1558,15 +1549,6 @@
     "@grafana/faro-web-tracing" "^1.3.7"
     hoist-non-react-statics "^3.3.2"
 
-"@grafana/faro-web-sdk@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-web-sdk/-/faro-web-sdk-1.3.5.tgz#2fe720f00d85d06bc1ef011cc4536044eea39de3"
-  integrity sha512-yIHLUnunmVvZr4dTMmk6Z2KpfF3HFmDI0YFWQFoQOP6vItHi/kXj9jFV92f0FuEjSaGwq46P9EJclpksL1tZAQ==
-  dependencies:
-    "@grafana/faro-core" "^1.3.5"
-    ua-parser-js "^1.0.32"
-    web-vitals "^3.1.1"
-
 "@grafana/faro-web-sdk@^1.3.7":
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/@grafana/faro-web-sdk/-/faro-web-sdk-1.3.7.tgz#3c850a47501d943e0470f87da3d6fe8ed8b27a71"
@@ -1576,26 +1558,7 @@
     ua-parser-js "^1.0.32"
     web-vitals "^3.1.1"
 
-"@grafana/faro-web-tracing@^1.3.5":
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-web-tracing/-/faro-web-tracing-1.3.7.tgz#2cbcf94d401c5c35b4b3497ee5f8cefa6002b32f"
-  integrity sha512-pjtEz2EoSzXk2vlcri7BJ0dgTsAfu+fL4KJQZI411bV/jQVHSRt/p+eafCJNztMX9VVwPeIKoDLn11vP5zuuLQ==
-  dependencies:
-    "@grafana/faro-web-sdk" "^1.3.7"
-    "@opentelemetry/api" "^1.7.0"
-    "@opentelemetry/context-zone" "^1.18.1"
-    "@opentelemetry/core" "^1.18.1"
-    "@opentelemetry/exporter-trace-otlp-http" "^0.45.1"
-    "@opentelemetry/instrumentation" "^0.45.1"
-    "@opentelemetry/instrumentation-document-load" "^0.35.0"
-    "@opentelemetry/instrumentation-fetch" "^0.45.1"
-    "@opentelemetry/instrumentation-xml-http-request" "^0.45.1"
-    "@opentelemetry/otlp-transformer" "^0.45.1"
-    "@opentelemetry/resources" "^1.18.1"
-    "@opentelemetry/sdk-trace-web" "^1.18.1"
-    "@opentelemetry/semantic-conventions" "^1.18.1"
-
-"@grafana/faro-web-tracing@^1.3.7":
+"@grafana/faro-web-tracing@^1.3.5", "@grafana/faro-web-tracing@^1.3.7":
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/@grafana/faro-web-tracing/-/faro-web-tracing-1.3.7.tgz#2cbcf94d401c5c35b4b3497ee5f8cefa6002b32f"
   integrity sha512-pjtEz2EoSzXk2vlcri7BJ0dgTsAfu+fL4KJQZI411bV/jQVHSRt/p+eafCJNztMX9VVwPeIKoDLn11vP5zuuLQ==
@@ -2296,17 +2259,6 @@
     "@opentelemetry/sdk-trace-web" "^1.15.0"
     "@opentelemetry/semantic-conventions" "^1.0.0"
 
-"@opentelemetry/instrumentation-document-load@^0.35.0":
-  version "0.35.0"
-  resolved "https://registry.yarnpkg.com/@opentelemetry/instrumentation-document-load/-/instrumentation-document-load-0.35.0.tgz#e56f4c4d9e5a654c6a164b848946e9b189f137de"
-  integrity sha512-U3zQBjbAF0rm7GT7YJ8DPqgiCdBoshmld4c1pZe3tAGAMa5QPIjonIfSMSvJ2XMh6Nvi+8Rfe3XFCe0cuWIjsQ==
-  dependencies:
-    "@opentelemetry/core" "^1.8.0"
-    "@opentelemetry/instrumentation" "^0.48.0"
-    "@opentelemetry/sdk-trace-base" "^1.0.0"
-    "@opentelemetry/sdk-trace-web" "^1.15.0"
-    "@opentelemetry/semantic-conventions" "^1.0.0"
-
 "@opentelemetry/instrumentation-fetch@^0.45.1":
   version "0.45.1"
   resolved "https://registry.yarnpkg.com/@opentelemetry/instrumentation-fetch/-/instrumentation-fetch-0.45.1.tgz#a5b530eeefa63699f33836a36bffa03902f31aa5"
@@ -2945,9 +2897,9 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@^20.0.0":
-  version "20.10.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.10.6.tgz#a3ec84c22965802bf763da55b2394424f22bfbb5"
-  integrity sha512-Vac8H+NlRNNlAmDfGUP7b5h/KA+AtWIzuXy0E6OyP8f1tCLYAtPvKRRDJjAPqhpCb0t6U2j7/xqAuLEebW2kiw==
+  version "20.11.16"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.16.tgz#4411f79411514eb8e2926f036c86c9f0e4ec6708"
+  integrity sha512-gKb0enTmRCzXSSUJDq6/sPcqrfCv2mkkG6Jt/clpn5eiCbKTY+SgZUxo+p8ZKMof5dCp9vHQUAB7wOUTod22wQ==
   dependencies:
     undici-types "~5.26.4"
 
@@ -8110,11 +8062,6 @@ multicast-dns@^7.2.5:
   dependencies:
     dns-packet "^5.2.2"
     thunky "^1.0.2"
-
-murmurhash-js@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/murmurhash-js/-/murmurhash-js-1.0.0.tgz#b06278e21fc6c37fa5313732b0412bcb6ae15f51"
-  integrity sha512-TvmkNhkv8yct0SVBSy+o8wYzXjE4Zz3PCesbfs8HiCXXdcTuocApFv11UWlNFWKYsP2okqrhb7JNlSm9InBhIw==
 
 mz@^2.7.0:
   version "2.7.0"
