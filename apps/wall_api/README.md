@@ -1,6 +1,7 @@
 # Wall-API
 
-[![WallAPI](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml)  
+[![WallAPI](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml)
+[![Coverage](https://codecov.io/gh/chazapp/o11y/graph/badge.svg?token=FIAGTCSSD1&flag=wall-api)](https://codecov.io/gh/chazapp/o11y)  
 
 ## Features
 
