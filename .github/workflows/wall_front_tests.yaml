@@ -1,4 +1,4 @@
-name: Wall Front component test
+name: Wall Front tests
 on:
   merge_group:
   push:
