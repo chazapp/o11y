@@ -28,7 +28,5 @@ jobs:
       - name: Upload app coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          working-directory: apps/wall_front/
-          files: coverage/lcov.info
           flags: wall-front
           token: ${{ secrets.CODECOV_TOKEN }}

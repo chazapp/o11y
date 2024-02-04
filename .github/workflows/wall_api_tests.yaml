@@ -26,7 +26,5 @@ jobs:
       - name: Upload app coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          working-directory: apps/wall_api/
-          files: wall-api.cov
           flags: wall-api
           token: ${{ secrets.CODECOV_TOKEN }}
