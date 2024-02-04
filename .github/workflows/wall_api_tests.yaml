@@ -24,7 +24,7 @@ jobs:
         run: go test ./... -cover -coverprofile=wall-api.cov
         working-directory: apps/wall_api
       - name: Upload app coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           working-directory: apps/wall_api/
           files: wall-api.cov
