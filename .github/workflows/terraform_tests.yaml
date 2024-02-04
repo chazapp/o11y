@@ -1,4 +1,4 @@
-name: Test installation in Minikube
+name: Terraform tests
 on:
   merge_group:
   push:
