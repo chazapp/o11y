@@ -22,7 +22,7 @@ resource "helm_release" "grafana" {
   name       = "grafana"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "grafana"
-  version    = "7.0.19"
+  version    = "7.3.0"
 
   namespace  = var.tools_namespace
 
@@ -38,7 +38,7 @@ resource "helm_release" "grafana-agent" {
   name       = "grafana-agent"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "grafana-agent"
-  version    = "0.29.0"
+  version    = "0.31.1"
 
   namespace  = var.tools_namespace
 
@@ -55,7 +55,7 @@ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "loki"
-  version    = "5.41.8"
+  version    = "5.42.2"
 
   namespace  = var.tools_namespace
 
@@ -121,7 +121,7 @@ resource "helm_release" "pyroscope" {
   name       = "pyroscope"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "pyroscope"
-  version    = "1.3.1"
+  version    = "1.4.0"
 
   namespace  = var.tools_namespace
 
