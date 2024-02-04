@@ -1,10 +1,14 @@
 # Wall_Front
 
+[![WallAPI](https://github.com/chazapp/o11y/actions/workflows/wall_front_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/wall_front_tests.yaml)
+[![Coverage](https://codecov.io/gh/chazapp/o11y/graph/badge.svg?token=FIAGTCSSD1&flag=wall-front)](https://codecov.io/gh/chazapp/o11y)  
+
 A Front-End application written in React that implements the WallAPI.
 Features:
 
 - Form creating Messages for the WallAPI
-- WebSocket listening for created messages and drawing them on a canvas element via Konva
+- WebSocket listening for created messages
+- MessageStream to display incoming messages
 
 ## Usage
 
