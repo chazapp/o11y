@@ -29,7 +29,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest --collectCoverage",
+    "test": "jest",
     "e2e": "npx playwright test",
     "eject": "react-scripts eject"
   },

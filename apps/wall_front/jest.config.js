@@ -15,4 +15,6 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   modulePathIgnorePatterns : ['playwright'],
   testEnvironment: 'jsdom',
+  collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.{ts,tsx}']
 };
