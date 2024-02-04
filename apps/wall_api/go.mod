@@ -11,7 +11,7 @@ require (
 	github.com/gorilla/websocket v1.5.1
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.6
 	github.com/prometheus/client_golang v1.18.0
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/urfave/cli/v2 v2.26.0
 	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.47.0
 	go.opentelemetry.io/otel v1.22.0
