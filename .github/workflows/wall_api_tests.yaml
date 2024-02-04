@@ -1,4 +1,4 @@
-name: WallAPI
+name: Wall API tests
 on:
   merge_group:
   push:

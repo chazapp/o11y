@@ -4,6 +4,7 @@
 [![WallAPI](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/wall_api_tests.yaml)
 [![WallFront](https://github.com/chazapp/o11y/actions/workflows/wall_front_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/wall_front_tests.yaml)
 [![End-to-End](https://github.com/chazapp/o11y/actions/workflows/e2e_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/e2e_tests.yaml)
+[![Terraform tests](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yaml/badge.svg)](https://github.com/chazapp/o11y/actions/workflows/terraform_tests.yaml)
 
 A DevOps shop showcase of observability in action.  
 
