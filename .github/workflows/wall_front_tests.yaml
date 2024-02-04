@@ -1,4 +1,4 @@
-name: Apps E2E tests
+name: Wall-front component testing
 on:
   merge_group:
   push:
@@ -22,6 +22,7 @@ jobs:
         working-directory: apps/wall_front/
 
       - name: Tests front-end
+        working-directory: apps/wall_front/
         run: yarn test
 
       - name: Upload app coverage to Codecov
