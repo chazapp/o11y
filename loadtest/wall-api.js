@@ -17,6 +17,8 @@ export default function () {
   const { text, from } = element;
   const payload = { username: from, message: text }
   let res = http.post(`${__ENV.API_URL}/message`, JSON.stringify(payload))
-  check(res, { 'Success: Message': (r) => r.status === 201 })
+  check(res, { 'Success: Post Message': (r) => r.status === 201 })
+  res = http.get(`${__ENV.API_URL}/message/${res.json("id")}`)
+  check(res, {'Sucess: Get Message': (r) => r.status === 200 })
   sleep(1)
 }
