@@ -15,6 +15,9 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/slok/go-http-metrics/metrics/prometheus"
+	"github.com/slok/go-http-metrics/middleware"
+	httpmetrics "github.com/slok/go-http-metrics/middleware/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
 	"gorm.io/driver/postgres"
@@ -24,9 +27,12 @@ import (
 
 func newWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.Engine {
 	r := gin.New()
+	metricsMiddleware := middleware.New(middleware.Config{
+		Recorder: prometheus.NewRecorder(prometheus.Config{}),
+	})
 	r.Use(otelgin.Middleware("wall-api"))
+	//r.Use()
 	r.Use(gin.Recovery())
-
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	mr := api.NewMessageRouter(db, wsHub)
@@ -42,10 +48,10 @@ func newWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"*"},
 	}))
-	r.POST("/message", mr.CreateMessage)
-	r.GET("/message/:id", mr.GetMessage)
-	r.GET("/messages", mr.GetMessages)
-	r.GET("/ws", wsHub.WsHandler)
+	r.POST("/message", httpmetrics.Handler("/message", metricsMiddleware), mr.CreateMessage)
+	r.GET("/message/:id", httpmetrics.Handler("/message/:id", metricsMiddleware), mr.GetMessage)
+	r.GET("/messages", httpmetrics.Handler("/messages", metricsMiddleware), mr.GetMessages)
+	r.GET("/ws", httpmetrics.Handler("/ws", metricsMiddleware), wsHub.WsHandler)
 
 	return r
 }
