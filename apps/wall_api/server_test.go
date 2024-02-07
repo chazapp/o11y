@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/chazapp/o11/apps/wall_api/models"
-	"github.com/chazapp/o11/apps/wall_api/ws"
+	"github.com/chazapp/o11y/apps/wall_api/models"
+	"github.com/chazapp/o11y/apps/wall_api/ws"
 	"github.com/glebarez/sqlite"
 	"github.com/go-playground/assert/v2"
 	"gorm.io/gorm"

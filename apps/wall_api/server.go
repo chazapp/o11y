@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/chazapp/o11/apps/wall_api/api"
-	"github.com/chazapp/o11/apps/wall_api/models"
-	"github.com/chazapp/o11/apps/wall_api/ws"
+	"github.com/chazapp/o11y/apps/wall_api/api"
+	"github.com/chazapp/o11y/apps/wall_api/models"
+	"github.com/chazapp/o11y/apps/wall_api/ws"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
