@@ -28,12 +28,23 @@ datasources:
         uid: loki
         type: loki
         url: http://loki-gateway
+        jsonData:
+          derivedFields:
+            - name: TraceID
+              datasourceUid: tempo
+              matcherRegex: "\"trace_id\":\"(\\w+)\""
+              url: $${__value.raw}
       - name: Tempo
+        uid: tempo
         type: tempo
         url: http://tempo:3100
         jsonData:
           tracesToLogsV2:
             datasourceUid: "loki"
+            spanStartTimeShift: '-1h'
+            spanEndTimeShift: '1h'
+            filterByTraceID: true
+            tags: [{ key: 'service.name', value: 'app'}]
           serviceMap:
             datasourceUid: prometheus
       - name: Pyroscope
