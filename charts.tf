@@ -143,7 +143,7 @@ resource "kubernetes_namespace" "apps_namespace" {
 resource "helm_release" "wall_api" {
   name      = "wall-api"
   chart = "${path.module}/apps/wall_api/chart"
-  version = "2.1.1"
+  version = "2.2.0"
   namespace = "apps"
   depends_on = [
     helm_release.kube-prometheus-stack
