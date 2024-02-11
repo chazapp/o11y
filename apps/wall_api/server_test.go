@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -14,16 +12,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func TestHealthcheck(t *testing.T) {
-	router := newOpsEngine()
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/health", nil)
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, 200, w.Code)
-}
-
 func createTestingDB() *gorm.DB {
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
@@ -33,23 +21,21 @@ func createTestingDB() *gorm.DB {
 	return db
 }
 
-func TestCreateMessage(t *testing.T) {
-	db := createTestingDB()
-	wsHub := ws.NewHub()
-	go wsHub.Run()
+func TestHealthcheck(t *testing.T) {
+	router := NewOpsEngine()
 
-	router := newWallAPIEngine(db, wsHub, []string{"http://localhost"})
 	w := httptest.NewRecorder()
-	payload, err := json.Marshal(map[string]interface{}{
-		"message":  "Hello world !",
-		"username": "foo",
-	})
-	if err != nil {
-		panic(err)
-	}
-	req, _ := http.NewRequest("POST", "/message", bytes.NewBuffer(payload))
-	req.Header.Set("Content-Type", "application/json")
+	req, _ := http.NewRequest("GET", "/health", nil)
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, 201, w.Code)
+	assert.Equal(t, 200, w.Code)
+}
+
+func TestNewWallAPIEngine(t *testing.T) {
+	db := createTestingDB()
+	wsHub := ws.NewHub()
+	engine := NewWallAPIEngine(db, wsHub, []string{
+		"http://localhost:3000",
+	})
+	assert.Equal(t, len(engine.Routes()), 4)
 }

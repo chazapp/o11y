@@ -25,7 +25,7 @@ import (
 	"gorm.io/plugin/opentelemetry/tracing"
 )
 
-func newWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.Engine {
+func NewWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.Engine {
 	r := gin.New()
 	metricsMiddleware := middleware.New(middleware.Config{
 		Recorder: prometheus.NewRecorder(prometheus.Config{}),
@@ -56,7 +56,7 @@ func newWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.
 	return r
 }
 
-func newOpsEngine() *gin.Engine {
+func NewOpsEngine() *gin.Engine {
 	r := gin.New()
 	pprof.Register(r)
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
@@ -68,8 +68,8 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int, opsPort int, allow
 	db := initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
 	wsHub := ws.NewHub()
 	go wsHub.Run()
-	r := newWallAPIEngine(db, wsHub, allowedOrigins)
-	opsRouter := newOpsEngine()
+	r := NewWallAPIEngine(db, wsHub, allowedOrigins)
+	opsRouter := NewOpsEngine()
 	go opsRouter.Run(fmt.Sprintf("0.0.0.0:%d", opsPort))
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
