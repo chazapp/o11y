@@ -13,7 +13,7 @@ import (
 	"github.com/chazapp/o11y/apps/wall_api/ws"
 	"github.com/gin-gonic/gin"
 	"github.com/glebarez/sqlite"
-	"github.com/go-playground/assert"
+	assert "github.com/go-playground/assert/v2"
 	"gorm.io/gorm"
 )
 
