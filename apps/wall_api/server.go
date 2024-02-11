@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/chazapp/o11y/apps/wall_api/api"
 	"github.com/chazapp/o11y/apps/wall_api/models"
@@ -20,6 +22,7 @@ import (
 	httpmetrics "github.com/slok/go-http-metrics/middleware/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/trace"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/plugin/opentelemetry/tracing"
@@ -31,16 +34,31 @@ func NewWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.
 		Recorder: prometheus.NewRecorder(prometheus.Config{}),
 	})
 	r.Use(otelgin.Middleware("wall-api"))
-	//r.Use()
 	r.Use(gin.Recovery())
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	mr := api.NewMessageRouter(db, wsHub)
 
-	// ToDo: figure out structured Logging
 	r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		return fmt.Sprintf("clientIP=%s method=%s statusCode=%d latency=%s path=%s\n",
-			param.ClientIP, param.Method, param.StatusCode, param.Latency, param.Path)
+		currentSpan := trace.SpanFromContext(param.Request.Context())
+		currentTrace := currentSpan.SpanContext().TraceID()
+		logData := map[string]interface{}{
+			"time":       param.TimeStamp.Format(time.RFC3339),
+			"clientIP":   param.ClientIP,
+			"method":     param.Method,
+			"statusCode": param.StatusCode,
+			"latency":    param.Latency.Milliseconds(),
+			"path":       param.Path,
+			"span_id":    currentSpan.SpanContext().SpanID().String(),
+			"trace_id":   currentTrace.String(),
+		}
+		logJSON, err := json.Marshal(logData)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error marshalling log data: %v\n", err)
+			return ""
+		}
+
+		return string(logJSON) + "\n"
 	}))
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     allowedOrigins,
