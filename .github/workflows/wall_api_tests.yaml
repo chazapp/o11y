@@ -1,6 +1,7 @@
 name: Wall API tests
 on:
   merge_group:
+  push:
   # Path filtering not supported by CodeCov Flags
   # push:
   #   paths:
