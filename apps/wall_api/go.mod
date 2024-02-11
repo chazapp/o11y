@@ -9,7 +9,7 @@ require (
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/glebarez/sqlite v1.10.0
-	github.com/go-playground/assert v1.2.1
+	github.com/go-playground/assert/v2 v2.2.0
 	github.com/go-playground/assert/v2 v2.2.0
 	github.com/gorilla/websocket v1.5.1
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.7
