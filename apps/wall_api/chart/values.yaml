@@ -6,7 +6,7 @@ config:
 
 image:
   repository: ghcr.io/chazapp/o11y/wall_api
-  tag: 2.1.0
+  tag: 2.2.0
   pullPolicy: IfNotPresent
 
 service:

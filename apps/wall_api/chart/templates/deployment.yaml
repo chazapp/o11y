@@ -30,6 +30,9 @@ spec:
           - "--dbName={{ .Values.postgresql.database }}"  # PostgreSQL database from Helm values
           - "--allowedOrigins={{ .Values.config.allowedOrigins }}"
           - "--otlp={{ .Values.config.otlpEndpoint}}"
+        env:
+          - name: GIN_MODE
+            value: release
         livenessProbe:
           httpGet:
             path: /health
