@@ -17,7 +17,9 @@ func createTestingDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
+
 	db.AutoMigrate(&models.WallMessage{})
+
 	return db
 }
 
@@ -25,7 +27,7 @@ func TestHealthcheck(t *testing.T) {
 	router := NewOpsEngine()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/health", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/health", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)

@@ -8,6 +8,12 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var (
+	DefaultPort    = 8080
+	DefaultOpsPort = 8081
+)
+
+//nolint:funlen
 func main() {
 	app := &cli.App{
 		Name:  "wall-api",
@@ -41,13 +47,13 @@ func main() {
 					},
 					&cli.IntFlag{
 						Name:    "port",
-						Value:   8080,
+						Value:   DefaultPort,
 						EnvVars: []string{"PORT"},
 						Usage:   "Port of the API Server",
 					},
 					&cli.IntFlag{
 						Name:    "opsPort",
-						Value:   8081,
+						Value:   DefaultOpsPort,
 						EnvVars: []string{"OPS_PORT"},
 						Usage:   "Port of the Ops API Server (Healthcheck, Readiness, Metrics, pprof)",
 					},
@@ -78,6 +84,7 @@ func main() {
 					if otlpEndpoint != "" {
 						initProvider(otlpEndpoint)
 					}
+
 					return API(dbUser, dbPassword, dbHost, dbName, port, opsPort, allowedOrigins, otlpEndpoint)
 				},
 			},

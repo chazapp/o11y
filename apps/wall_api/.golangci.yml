@@ -1,0 +1,19 @@
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  # disable some excludes that golangci-lint has by default. see https://github.com/golangci/golangci-lint
+  exclude-use-default: false
+linters:
+  enable-all: true
+  disable:
+    # This project does not have a rule to have no globals
+    - gochecknoglobals
+    - gocyclo
+    - lll
+    # This project does not care about optimizing out few bytes of memory
+    - maligned
+    - depguard
+    - gci
+    - dogsled
+    - gofumpt
+    - tagalign
