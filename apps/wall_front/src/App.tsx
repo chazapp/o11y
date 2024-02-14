@@ -13,7 +13,7 @@ function App (props: { apiUrl: string }): JSX.Element {
   const [errMessage, setErrMessage] = useState('')
 
   useEffect(() => {
-    if (webSocket === undefined) {
+    if (webSocket !== undefined) {
       return
     }
     const ws = new WebSocket(`${httpUrlToWebSocketUrl(apiUrl)}/ws`)
@@ -21,6 +21,7 @@ function App (props: { apiUrl: string }): JSX.Element {
       setErrMessage('WebSocket error !')
     }
     ws.onmessage = (event) => {
+      console.log(event.data)
       const { message, username, id } = JSON.parse(event.data as string)
 
       console.warn('Received event message!')
