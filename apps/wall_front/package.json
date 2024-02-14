@@ -23,7 +23,7 @@
     "react-dom": "^18.2.0",
     "react-konva": "^18.2.10",
     "react-scripts": "5.0.1",
-    "typescript": "^5.0.0",
+    "typescript": "*",
     "web-vitals": "^3.0.0"
   },
   "scripts": {
@@ -31,7 +31,8 @@
     "build": "react-scripts build",
     "test": "jest",
     "e2e": "npx playwright test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{ts,tsx,js,jsx}"
   },
   "eslintConfig": {
     "extends": [
@@ -54,6 +55,14 @@
   "devDependencies": {
     "@playwright/test": "^1.40.1",
     "@testing-library/dom": "^9.3.4",
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "eslint": "^8.0.1",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-playwright": "^1.0.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.33.2",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "react-test-renderer": "^18.2.0",

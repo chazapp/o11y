@@ -43,7 +43,6 @@ Run the test suite:
 
 ```bash
 $ go test ./... -cover
-$ go test ./... -cover
 ok      github.com/chazapp/o11/apps/wall_api    0.450s  coverage: 26.4% of statements
 ?       github.com/chazapp/o11/apps/wall_api/api        [no test files]
 ?       github.com/chazapp/o11/apps/wall_api/metrics    [no test files]
