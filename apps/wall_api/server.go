@@ -28,14 +28,19 @@ import (
 	"gorm.io/plugin/opentelemetry/tracing"
 )
 
+var (
+	SQLMaxConnections = 100
+)
+
 func NewWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.Engine {
 	r := gin.New()
+	r.Use(otelgin.Middleware("wall-api"))
+	r.Use(gin.Recovery())
+
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	metricsMiddleware := middleware.New(middleware.Config{
 		Recorder: prometheus.NewRecorder(prometheus.Config{}),
 	})
-	r.Use(otelgin.Middleware("wall-api"))
-	r.Use(gin.Recovery())
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
 	mr := api.NewMessageRouter(db, wsHub)
 
@@ -53,8 +58,10 @@ func NewWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.
 			"trace_id":   currentTrace.String(),
 		}
 		logJSON, err := json.Marshal(logData)
+
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error marshalling log data: %v\n", err)
+
 			return ""
 		}
 
@@ -79,40 +86,54 @@ func NewOpsEngine() *gin.Engine {
 	pprof.Register(r)
 	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	r.GET("/health", healthCheck)
+
 	return r
 }
 
-func API(dbUser, dbPassword, dbHost, dbName string, port int, opsPort int, allowedOrigins []string, otlpEndpoint string) (err error) {
-	db := initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
+func API(dbUser, dbPassword, dbHost, dbName string,
+	port int, opsPort int, allowedOrigins []string, otlpEndpoint string) error {
 	wsHub := ws.NewHub()
 	go wsHub.Run()
+
+	db := initDB(dbUser, dbPassword, dbHost, dbName, otlpEndpoint)
 	r := NewWallAPIEngine(db, wsHub, allowedOrigins)
+
 	opsRouter := NewOpsEngine()
+
+	//nolint:errcheck // Can't check for return error in Go routine
 	go opsRouter.Run(fmt.Sprintf("0.0.0.0:%d", opsPort))
+
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
 
-func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) (db *gorm.DB) {
+func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) *gorm.DB {
 	dbURI := fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=disable", dbUser, dbPassword, dbHost, dbName)
-	var err error
-	db, err = gorm.Open(postgres.Open(dbURI), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dbURI), &gorm.Config{})
+
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to connect to the database")
 	}
+
 	if otlpEndpoint != "" {
-		if err := db.Use(tracing.NewPlugin(tracing.WithTracerProvider(otel.GetTracerProvider()))); err != nil {
+		if err = db.Use(tracing.NewPlugin(tracing.WithTracerProvider(otel.GetTracerProvider()))); err != nil {
 			log.Fatal().Err(err)
 		}
 	}
 	// Auto-migrate the schema
-	db.AutoMigrate(&models.WallMessage{})
+	err = db.AutoMigrate(&models.WallMessage{})
 
-	// Limit connection pool
-	sqlDb, err := db.DB()
 	if err != nil {
 		log.Fatal().Err(err)
 	}
-	sqlDb.SetMaxOpenConns(100)
+
+	// Limit connection pool
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal().Err(err)
+	}
+
+	sqlDB.SetMaxOpenConns(SQLMaxConnections)
+
 	return db
 }
 

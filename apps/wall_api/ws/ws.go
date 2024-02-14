@@ -1,7 +1,6 @@
 package ws
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -9,12 +8,16 @@ import (
 	"github.com/chazapp/o11y/apps/wall_api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/rs/zerolog/log"
 )
 
+var WsReadBufferSize = 1024
+var WsWriteBufferSize = 1024
+var WsTimeoutSeconds = 10
 var wsupgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	CheckOrigin: func(r *http.Request) bool {
+	ReadBufferSize:  WsReadBufferSize,
+	WriteBufferSize: WsWriteBufferSize,
+	CheckOrigin: func(_ *http.Request) bool {
 		return true
 	},
 }
@@ -33,6 +36,7 @@ type Hub struct {
 
 func NewHub() *Hub {
 	metrics.WSClients.Set(0)
+
 	return &Hub{
 		Broadcast: make(chan models.WallMessage),
 		register:  make(chan *Client),
@@ -44,8 +48,10 @@ func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.register:
-			metrics.WSClients.Inc()
 			h.clients[client] = true
+
+			metrics.WSClients.Inc()
+
 		case message := <-h.Broadcast:
 			for client := range h.clients {
 				select {
@@ -56,31 +62,35 @@ func (h *Hub) Run() {
 				}
 			}
 		}
-
 	}
 }
 
 func (c *Client) writePump() {
-	ticker := time.NewTicker(10 * time.Second)
+	ticker := time.NewTicker(time.Duration(WsTimeoutSeconds) * time.Second)
 	defer func() {
 		ticker.Stop()
 		c.conn.Close()
 		metrics.WSClients.Dec()
 	}()
+
 	for {
 		select {
 		case message, ok := <-c.send:
-			c.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
+
 			if !ok {
 				// The hub closed the channel.
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+
 				return
 			}
+
 			if err := c.conn.WriteJSON(message); err != nil {
 				return
 			}
 		case <-ticker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(10 * time.Second))
+			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
+
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}
@@ -91,9 +101,10 @@ func (c *Client) writePump() {
 func (h *Hub) WsHandler(c *gin.Context) {
 	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Err(err)
 		return
 	}
+
 	client := &Client{hub: h, conn: conn, send: make(chan models.WallMessage)}
 	client.hub.register <- client
 
