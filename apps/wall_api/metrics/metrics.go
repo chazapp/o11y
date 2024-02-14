@@ -7,7 +7,7 @@ import (
 
 var (
 	ProcessedMessages = promauto.NewCounter(prometheus.CounterOpts{
-		Name: "processed_messages",
+		Name: "processed_messages_total",
 		Help: "A counter for the number of messages received",
 	})
 	WSClients = promauto.NewGauge(prometheus.GaugeOpts{

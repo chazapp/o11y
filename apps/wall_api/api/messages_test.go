@@ -1,4 +1,4 @@
-package api
+package api_test
 
 import (
 	"bytes"
@@ -9,11 +9,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/chazapp/o11y/apps/wall_api/api"
 	"github.com/chazapp/o11y/apps/wall_api/models"
 	"github.com/chazapp/o11y/apps/wall_api/ws"
 	"github.com/gin-gonic/gin"
 	"github.com/glebarez/sqlite"
 	assert "github.com/go-playground/assert/v2"
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +24,11 @@ func createTestingDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&models.WallMessage{})
+
+	if err = db.AutoMigrate(&models.WallMessage{}); err != nil {
+		log.Panic().Err(err)
+	}
+
 	return db
 }
 
@@ -32,30 +38,35 @@ func toJSONReader(payload map[string]interface{}) io.Reader {
 	if err != nil {
 		panic(err)
 	}
+
 	return bytes.NewReader(jsonBytes)
 }
 
-func setupTestEnvironment() (*gorm.DB, *ws.Hub, *MessageRouter, *gin.Engine) {
-	db := createTestingDB()
+func setupTestEnvironment() /*gorm.DB, *ws.Hub, *api.MessageRouter,*/ *gin.Engine {
 	wsHub := ws.NewHub()
 	go wsHub.Run()
-	mr := NewMessageRouter(db, wsHub)
+
+	db := createTestingDB()
+
+	mr := api.NewMessageRouter(db, wsHub)
 	r := gin.New()
 	r.POST("/message", mr.CreateMessage)
 	r.GET("/message/:id", mr.GetMessage)
 	r.GET("/messages", mr.GetMessages)
-	return db, wsHub, mr, r
+
+	return /*db, wsHub, mr,*/ r
 }
 
 func sendMessage(t *testing.T, r *gin.Engine, payload []byte) map[string]interface{} {
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/message", bytes.NewBuffer(payload))
+	req, _ := http.NewRequest(http.MethodPost, "/message", bytes.NewBuffer(payload))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 	assert.Equal(t, 201, w.Code)
 
 	var m map[string]interface{}
 	err := json.NewDecoder(w.Result().Body).Decode(&m)
+
 	if err != nil {
 		panic(err)
 	}
@@ -64,7 +75,7 @@ func sendMessage(t *testing.T, r *gin.Engine, payload []byte) map[string]interfa
 }
 
 func TestCreateMessage(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	payload, err := json.Marshal(map[string]interface{}{
 		"message":  "Hello world !",
@@ -78,7 +89,7 @@ func TestCreateMessage(t *testing.T) {
 }
 
 func TestGetMessage(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	payload, err := json.Marshal(map[string]interface{}{
 		"message":  "Hello world !",
@@ -90,7 +101,7 @@ func TestGetMessage(t *testing.T) {
 
 	m := sendMessage(t, r, payload)
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("/message/%d", int(m["id"].(float64))), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("/message/%d", int(m["id"].(float64))), nil)
 	if err != nil {
 		panic(err)
 	}
@@ -102,6 +113,7 @@ func TestGetMessage(t *testing.T) {
 
 	var response map[string]interface{}
 	err = json.NewDecoder(w.Result().Body).Decode(&response)
+
 	if err != nil {
 		panic(err)
 	}
@@ -110,7 +122,7 @@ func TestGetMessage(t *testing.T) {
 }
 
 func TestGetMessagesWithLimitAndOffset(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	payloads := []map[string]interface{}{
 		{"message": "Message 1", "username": "user1"},
@@ -122,20 +134,23 @@ func TestGetMessagesWithLimitAndOffset(t *testing.T) {
 		p, _ := json.Marshal(payload)
 		sendMessage(t, r, p)
 	}
+
 	limit := 2
 	offset := 1
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", fmt.Sprintf("/messages?limit=%d&offset=%d", limit, offset), nil)
+	req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("/messages?limit=%d&offset=%d", limit, offset), nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, 200, w.Code)
 
 	var response []map[string]interface{}
+
 	err := json.NewDecoder(w.Result().Body).Decode(&response)
 	if err != nil {
 		panic(err)
 	}
+
 	assert.Equal(t, limit, len(response))
 
 	expectedMessages := payloads[1:]
@@ -146,12 +161,12 @@ func TestGetMessagesWithLimitAndOffset(t *testing.T) {
 }
 
 func TestBadRequests(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	// Send a POST request with missing required fields
 	payload := map[string]interface{}{}
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("POST", "/message", toJSONReader(payload))
+	req, _ := http.NewRequest(http.MethodPost, "/message", toJSONReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 	r.ServeHTTP(w, req)
 
@@ -159,28 +174,28 @@ func TestBadRequests(t *testing.T) {
 
 	// Send a GET request with non-numeric id parameter
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("GET", "/message/abc", nil)
+	req, _ = http.NewRequest(http.MethodGet, "/message/abc", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 
 	// Send a GET request to a non-existent endpoint
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("GET", "/nonexistent", nil)
+	req, _ = http.NewRequest(http.MethodGet, "/nonexistent", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 
 	// Send a GET request with non-numeric limit
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("GET", "/messages?limit=aaaa&offset=0", nil)
+	req, _ = http.NewRequest(http.MethodGet, "/messages?limit=aaaa&offset=0", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 
 	// Send a GET request with non-numeric offset
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest("GET", "/messages?limit=10&offset=aaaaa", nil)
+	req, _ = http.NewRequest(http.MethodGet, "/messages?limit=10&offset=aaaaa", nil)
 	r.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
