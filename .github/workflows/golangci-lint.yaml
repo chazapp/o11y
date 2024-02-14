@@ -30,3 +30,4 @@ jobs:
           # When `install-mode` is `goinstall` the value can be v1.2.3, `latest`, or the hash of a commit.
           version: v1.56.1
           working-directory: apps/wall_api
+          args: --timeout=30m --config=apps/wall_api/.golangci.yml --issues-exit-code=0 
