@@ -1,27 +1,37 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { getWebInstrumentations, initializeFaro, ReactIntegration } from '@grafana/faro-react';
-import { TracingInstrumentation } from '@grafana/faro-web-tracing';
-import axios from "axios";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+import App from './App'
+import reportWebVitals from './reportWebVitals'
+import { getWebInstrumentations, initializeFaro, ReactIntegration } from '@grafana/faro-react'
+import { TracingInstrumentation } from '@grafana/faro-web-tracing'
+import axios from 'axios'
 
+let API_URL = process.env.REACT_APP_API_URL
+if (API_URL === undefined) {
+  API_URL = window.env?.API_URL
+}
 
-const API_URL = window.env && window.env.API_URL ? window.env.API_URL : process.env.REACT_APP_API_URL;
-const FARO_URL = window.env && window.env.FARO_URL ? window.env.FARO_URL : process.env.REACT_APP_FARO_URL;
-const VERSION = window.env && window.env.VERSION ? window.env.VERSION : "dev";
+let FARO_URL = process.env.REACT_APP_FARO_URL
+if (FARO_URL === undefined) {
+  FARO_URL = window.env?.FARO_URL
+}
+
+let VERSION = 'dev'
+if (window.env?.VERSION !== undefined) {
+  VERSION = window.env.VERSION
+}
 
 if (API_URL === undefined) {
-  throw new Error("API URL is undefined !")
+  throw new Error('API URL is undefined !')
 }
-axios.defaults.baseURL = API_URL;
+axios.defaults.baseURL = API_URL
 
-if (FARO_URL) {  
+if (FARO_URL !== undefined) {
   initializeFaro({
     url: `${FARO_URL}/collect`,
     app: {
-      name: "wall-browser",
+      name: 'wall-browser',
       version: VERSION
     },
     instrumentations: [
@@ -31,23 +41,28 @@ if (FARO_URL) {
       new TracingInstrumentation({
         instrumentationOptions: {
           // Requests to these URLs will have tracing headers attached.
-          propagateTraceHeaderCorsUrls: [new RegExp(`${API_URL}/*`)],
-        },
+          propagateTraceHeaderCorsUrls: [new RegExp(`${API_URL}/*`)]
+        }
       }),
       new ReactIntegration({
-      }),
-    ],
-  });
+      })
+    ]
+  })
+}
+
+const rootDiv = document.getElementById('root')
+if (rootDiv === null) {
+  throw new Error('No root <div> found !')
 }
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+  rootDiv
+)
 root.render(
   <App apiUrl={API_URL}/>
-);
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+reportWebVitals()
