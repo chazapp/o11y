@@ -10,7 +10,6 @@
 - ORM Layer to PostgreSQL via `go-orm`
 - A WebSocket server that emits `Message` objects on reception of `POST /message`
 
-
 ## How to run
 
 Have a Postgres instance running via Docker:
