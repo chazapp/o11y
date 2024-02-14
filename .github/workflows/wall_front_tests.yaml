@@ -19,8 +19,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build front-end
+      - name: Install dependencies
         run: yarn install
+        working-directory: apps/wall_front/
+
+      - name: Lint front-end
+        run: yarn lint 
         working-directory: apps/wall_front/
 
       - name: Tests front-end
