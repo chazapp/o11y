@@ -9,6 +9,7 @@ import (
 	"github.com/chazapp/o11y/apps/wall_api/ws"
 	"github.com/glebarez/sqlite"
 	"github.com/go-playground/assert/v2"
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -18,7 +19,9 @@ func createTestingDB() *gorm.DB {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.WallMessage{})
+	if err = db.AutoMigrate(&models.WallMessage{}); err != nil {
+		log.Panic().Err(err)
+	}
 
 	return db
 }

@@ -13,7 +13,6 @@ var (
 	DefaultOpsPort = 8081
 )
 
-//nolint:funlen
 func main() {
 	app := &cli.App{
 		Name:  "wall-api",
@@ -82,7 +81,9 @@ func main() {
 					allowedOrigins := c.StringSlice("allowedOrigins")
 					otlpEndpoint := c.String("otlp")
 					if otlpEndpoint != "" {
-						initProvider(otlpEndpoint)
+						if _, err := initProvider(otlpEndpoint); err != nil {
+							log.Panic().Err(err)
+						}
 					}
 
 					return API(dbUser, dbPassword, dbHost, dbName, port, opsPort, allowedOrigins, otlpEndpoint)

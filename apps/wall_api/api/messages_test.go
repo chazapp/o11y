@@ -15,6 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/glebarez/sqlite"
 	assert "github.com/go-playground/assert/v2"
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +25,9 @@ func createTestingDB() *gorm.DB {
 		panic(err)
 	}
 
-	db.AutoMigrate(&models.WallMessage{})
+	if err = db.AutoMigrate(&models.WallMessage{}); err != nil {
+		log.Panic().Err(err)
+	}
 
 	return db
 }
@@ -39,7 +42,7 @@ func toJSONReader(payload map[string]interface{}) io.Reader {
 	return bytes.NewReader(jsonBytes)
 }
 
-func setupTestEnvironment() (*gorm.DB, *ws.Hub, *api.MessageRouter, *gin.Engine) {
+func setupTestEnvironment() /*gorm.DB, *ws.Hub, *api.MessageRouter,*/ *gin.Engine {
 	wsHub := ws.NewHub()
 	go wsHub.Run()
 
@@ -51,7 +54,7 @@ func setupTestEnvironment() (*gorm.DB, *ws.Hub, *api.MessageRouter, *gin.Engine)
 	r.GET("/message/:id", mr.GetMessage)
 	r.GET("/messages", mr.GetMessages)
 
-	return db, wsHub, mr, r
+	return /*db, wsHub, mr,*/ r
 }
 
 func sendMessage(t *testing.T, r *gin.Engine, payload []byte) map[string]interface{} {
@@ -72,7 +75,7 @@ func sendMessage(t *testing.T, r *gin.Engine, payload []byte) map[string]interfa
 }
 
 func TestCreateMessage(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	payload, err := json.Marshal(map[string]interface{}{
 		"message":  "Hello world !",
@@ -86,7 +89,7 @@ func TestCreateMessage(t *testing.T) {
 }
 
 func TestGetMessage(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	payload, err := json.Marshal(map[string]interface{}{
 		"message":  "Hello world !",
@@ -119,7 +122,7 @@ func TestGetMessage(t *testing.T) {
 }
 
 func TestGetMessagesWithLimitAndOffset(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	payloads := []map[string]interface{}{
 		{"message": "Message 1", "username": "user1"},
@@ -158,7 +161,7 @@ func TestGetMessagesWithLimitAndOffset(t *testing.T) {
 }
 
 func TestBadRequests(t *testing.T) {
-	_, _, _, r := setupTestEnvironment()
+	r := setupTestEnvironment()
 
 	// Send a POST request with missing required fields
 	payload := map[string]interface{}{}

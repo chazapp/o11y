@@ -29,7 +29,7 @@ import (
 )
 
 var (
-	SqlMaxConnections = 100
+	SQLMaxConnections = 100
 )
 
 func NewWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.Engine {
@@ -90,7 +90,8 @@ func NewOpsEngine() *gin.Engine {
 	return r
 }
 
-func API(dbUser, dbPassword, dbHost, dbName string, port int, opsPort int, allowedOrigins []string, otlpEndpoint string) (err error) {
+func API(dbUser, dbPassword, dbHost, dbName string,
+	port int, opsPort int, allowedOrigins []string, otlpEndpoint string) error {
 	wsHub := ws.NewHub()
 	go wsHub.Run()
 
@@ -98,12 +99,14 @@ func API(dbUser, dbPassword, dbHost, dbName string, port int, opsPort int, allow
 	r := NewWallAPIEngine(db, wsHub, allowedOrigins)
 
 	opsRouter := NewOpsEngine()
+
+	//nolint:errcheck // Can't check for return error in Go routine
 	go opsRouter.Run(fmt.Sprintf("0.0.0.0:%d", opsPort))
 
 	return r.Run(fmt.Sprintf("0.0.0.0:%d", port))
 }
 
-func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) (db *gorm.DB) {
+func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) *gorm.DB {
 	dbURI := fmt.Sprintf("user=%s password=%s host=%s dbname=%s sslmode=disable", dbUser, dbPassword, dbHost, dbName)
 	db, err := gorm.Open(postgres.Open(dbURI), &gorm.Config{})
 
@@ -112,20 +115,24 @@ func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) (db 
 	}
 
 	if otlpEndpoint != "" {
-		if err := db.Use(tracing.NewPlugin(tracing.WithTracerProvider(otel.GetTracerProvider()))); err != nil {
+		if err = db.Use(tracing.NewPlugin(tracing.WithTracerProvider(otel.GetTracerProvider()))); err != nil {
 			log.Fatal().Err(err)
 		}
 	}
 	// Auto-migrate the schema
-	db.AutoMigrate(&models.WallMessage{})
+	err = db.AutoMigrate(&models.WallMessage{})
 
-	// Limit connection pool
-	sqlDb, err := db.DB()
 	if err != nil {
 		log.Fatal().Err(err)
 	}
 
-	sqlDb.SetMaxOpenConns(SqlMaxConnections)
+	// Limit connection pool
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal().Err(err)
+	}
+
+	sqlDB.SetMaxOpenConns(SQLMaxConnections)
 
 	return db
 }

@@ -1,7 +1,6 @@
 package ws
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -9,6 +8,7 @@ import (
 	"github.com/chazapp/o11y/apps/wall_api/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"github.com/rs/zerolog/log"
 )
 
 var WsReadBufferSize = 1024
@@ -17,7 +17,7 @@ var WsTimeoutSeconds = 10
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  WsReadBufferSize,
 	WriteBufferSize: WsWriteBufferSize,
-	CheckOrigin: func(r *http.Request) bool {
+	CheckOrigin: func(_ *http.Request) bool {
 		return true
 	},
 }
@@ -76,11 +76,11 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
-			c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
+			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
 
 			if !ok {
 				// The hub closed the channel.
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 
 				return
 			}
@@ -89,7 +89,7 @@ func (c *Client) writePump() {
 				return
 			}
 		case <-ticker.C:
-			c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
+			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
 
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
@@ -101,8 +101,7 @@ func (c *Client) writePump() {
 func (h *Hub) WsHandler(c *gin.Context) {
 	conn, err := wsupgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
-		fmt.Println(err)
-
+		log.Err(err)
 		return
 	}
 
