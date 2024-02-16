@@ -6,6 +6,7 @@ import '@testing-library/jest-dom'
 import Form from '../Form'
 import MessageBox from '../MessageBox'
 import MessageStream from '../MessageStream'
+import WallAppBar from '../WallAppBar'
 
 describe('Individual component render testing', () => {
   beforeEach(() => {
@@ -57,5 +58,13 @@ describe('Individual component render testing', () => {
       expect(username).toBeInTheDocument()
       expect(message).toBeInTheDocument()
     })
+  })
+
+  it('Renders an AppBar', async () => {
+    render(
+      <WallAppBar/>
+    )
+    const appName = screen.getByText(/The Wall Application/)
+    expect(appName).toBeInTheDocument()
   })
 })
