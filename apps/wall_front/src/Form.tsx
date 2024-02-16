@@ -29,7 +29,7 @@ function Form (): JSX.Element {
 
   return (
         <form onSubmit={handleSubmit}>
-          <Box display="flex" flexDirection="column">
+          <Box display="flex" flexDirection="column" gap="5px">
             <TextField
               label="Nick"
               variant="outlined"

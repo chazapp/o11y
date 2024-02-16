@@ -6,6 +6,7 @@ import { type WallMessage } from './types'
 import { httpUrlToWebSocketUrl } from './utils'
 import MessageStream from './MessageStream'
 import BuildInfo from './BuildInfo'
+import WallAppBar from './WallAppBar'
 
 function App (props: { apiUrl: string, clientVersion: string }): JSX.Element {
   const { apiUrl, clientVersion } = props
@@ -39,13 +40,16 @@ function App (props: { apiUrl: string, clientVersion: string }): JSX.Element {
 
   return (
     <div className="App">
+      <WallAppBar />
       <Box sx={{
         display: 'flex',
         flexDirection: 'row'
       }}>
         <Box sx={{
           marginTop: '1%',
-          width: '500px'
+          width: '500px',
+          textAlign: 'center',
+          margin: '10px'
         }}>
             <Form />
             {errMessage !== ''
