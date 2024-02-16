@@ -42,5 +42,5 @@ func TestNewWallAPIEngine(t *testing.T) {
 	engine := NewWallAPIEngine(db, wsHub, []string{
 		"http://localhost:3000",
 	})
-	assert.Equal(t, len(engine.Routes()), 4)
+	assert.Equal(t, len(engine.Routes()), 5)
 }
