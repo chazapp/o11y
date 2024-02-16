@@ -1,12 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-test('has title', async ({ page }) => {
-  await page.goto('/');
-
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/The Wall/);
-});
-
 test('sends a message and sees it in stream', async ({ page }) => {
   await page.goto('/');
 

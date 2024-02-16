@@ -4,6 +4,13 @@ export interface WallMessage {
   username: string
 }
 
+export interface ApiStatus {
+  goVersion: string
+  version: string
+  connectedWS: number
+  messagesCount: number
+}
+
 declare global {
   interface Window {
     env: {

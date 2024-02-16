@@ -14,6 +14,8 @@ import (
 var WsReadBufferSize = 1024
 var WsWriteBufferSize = 1024
 var WsTimeoutSeconds = 10
+var ChannelSize = 255
+
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  WsReadBufferSize,
 	WriteBufferSize: WsWriteBufferSize,
@@ -38,7 +40,7 @@ func NewHub() *Hub {
 	metrics.WSClients.Set(0)
 
 	return &Hub{
-		Broadcast: make(chan models.WallMessage),
+		Broadcast: make(chan models.WallMessage, ChannelSize),
 		register:  make(chan *Client),
 		clients:   make(map[*Client]bool),
 	}
@@ -58,7 +60,6 @@ func (h *Hub) Run() {
 				case client.send <- message:
 				default:
 					close(client.send)
-					delete(h.clients, client)
 				}
 			}
 		}
@@ -71,27 +72,33 @@ func (c *Client) writePump() {
 		ticker.Stop()
 		c.conn.Close()
 		metrics.WSClients.Dec()
+		delete(c.hub.clients, c)
+		log.Error().Msg("Removed wwebsocket via defer")
 	}()
-
+	log.Info().Msg("Started write pump")
 	for {
 		select {
 		case message, ok := <-c.send:
-			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
-
-			if !ok {
-				// The hub closed the channel.
-				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-
+			if err := c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second)); err != nil {
+				log.Err(err)
 				return
 			}
-
+			if !ok {
+				log.Error().Msg("Hub  closing write pump")
+				_ = c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				return
+			}
 			if err := c.conn.WriteJSON(message); err != nil {
+				log.Err(err)
 				return
 			}
 		case <-ticker.C:
-			_ = c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second))
-
+			if err := c.conn.SetWriteDeadline(time.Now().Add(time.Duration(WsTimeoutSeconds) * time.Second)); err != nil {
+				log.Err(err)
+				return
+			}
 			if err := c.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				log.Err(err)
 				return
 			}
 		}
@@ -105,8 +112,12 @@ func (h *Hub) WsHandler(c *gin.Context) {
 		return
 	}
 
-	client := &Client{hub: h, conn: conn, send: make(chan models.WallMessage)}
+	client := &Client{hub: h, conn: conn, send: make(chan models.WallMessage, ChannelSize)}
 	client.hub.register <- client
 
 	go client.writePump()
+}
+
+func (h *Hub) GetCountConnectedClients() int {
+	return len(h.clients)
 }

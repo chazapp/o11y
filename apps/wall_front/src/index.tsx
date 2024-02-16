@@ -17,9 +17,9 @@ if (FARO_URL === undefined) {
   FARO_URL = window.env?.FARO_URL
 }
 
-let VERSION = 'dev'
+let CLIENT_VERSION = 'dev'
 if (window.env?.VERSION !== undefined) {
-  VERSION = window.env.VERSION
+  CLIENT_VERSION = window.env.VERSION
 }
 
 if (API_URL === undefined) {
@@ -32,7 +32,7 @@ if (FARO_URL !== undefined) {
     url: `${FARO_URL}/collect`,
     app: {
       name: 'wall-browser',
-      version: VERSION
+      version: CLIENT_VERSION
     },
     instrumentations: [
       // Load the default Web instrumentations
@@ -59,7 +59,7 @@ const root = ReactDOM.createRoot(
   rootDiv
 )
 root.render(
-  <App apiUrl={API_URL}/>
+  <App apiUrl={API_URL} clientVersion={CLIENT_VERSION}/>
 )
 
 // If you want to start measuring performance in your app, pass a function

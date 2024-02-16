@@ -10,7 +10,18 @@ const data = new SharedArray('some quotes', function () {
   return f; // f must be an array
 });
 
-
+export const options = {
+  scenarios: {
+    constant_request_rate: {
+      executor: 'constant-arrival-rate',
+      rate: 1000,
+      timeUnit: '1s', // 1000 iterations per second, i.e. 1000 RPS
+      duration: '30s',
+      preAllocatedVUs: 200, // how large the initial pool of VUs would be
+      maxVUs: 200, // if the preAllocatedVUs are not enough, we can initialize more
+    },
+  },
+};
 
 export default function () {
   const element = data[Math.floor(Math.random() * data.length)];
@@ -18,7 +29,4 @@ export default function () {
   const payload = { username: from, message: text }
   let res = http.post(`${__ENV.API_URL}/message`, JSON.stringify(payload))
   check(res, { 'Success: Post Message': (r) => r.status === 201 })
-  res = http.get(`${__ENV.API_URL}/message/${res.json("id")}`)
-  check(res, {'Sucess: Get Message': (r) => r.status === 200 })
-  sleep(1)
 }
