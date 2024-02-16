@@ -99,7 +99,7 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
       - name: Compute git version
-        run: git describe --tags >> $GITHUB_OUTPUT
+        run: git describe --tags >> "$GITHUB_OUTPUT"
         id: git-tags
 
       - name: Build and push Docker 
