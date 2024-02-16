@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 ENV CGO_ENABLED=0
-RUN go build -ldflags="-X main.Version=`$VERSION`" -o wall_api
+RUN go build -ldflags="-X main.Version=$VERSION" -o wall_api
 
 FROM alpine:3.19.1
 WORKDIR /app
