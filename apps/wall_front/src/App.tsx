@@ -5,9 +5,10 @@ import Form from './Form'
 import { type WallMessage } from './types'
 import { httpUrlToWebSocketUrl } from './utils'
 import MessageStream from './MessageStream'
+import BuildInfo from './BuildInfo'
 
-function App (props: { apiUrl: string }): JSX.Element {
-  const { apiUrl } = props
+function App (props: { apiUrl: string, clientVersion: string }): JSX.Element {
+  const { apiUrl, clientVersion } = props
   const [wallMessages, setWallMessages] = useState<WallMessage[]>([])
   const [webSocket, setWebSocket] = useState<WebSocket | undefined>(undefined)
   const [errMessage, setErrMessage] = useState('')
@@ -59,7 +60,7 @@ function App (props: { apiUrl: string }): JSX.Element {
           <MessageStream messages={wallMessages}/>
         </Box>
       </Box>
-
+      <BuildInfo clientVersion={clientVersion}/>
     </div>
   )
 }
