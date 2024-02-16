@@ -111,7 +111,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
           build-args: |
-            VERSION=${{ steps.git-tags.outputs.stdout }}
+            VERSION=${{ steps.git-tags.outputs.version }}
 
 
       - name: Container scan
