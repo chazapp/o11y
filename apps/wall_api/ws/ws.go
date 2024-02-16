@@ -14,6 +14,8 @@ import (
 var WsReadBufferSize = 1024
 var WsWriteBufferSize = 1024
 var WsTimeoutSeconds = 10
+var ChannelSize = 255
+
 var wsupgrader = websocket.Upgrader{
 	ReadBufferSize:  WsReadBufferSize,
 	WriteBufferSize: WsWriteBufferSize,
@@ -38,7 +40,7 @@ func NewHub() *Hub {
 	metrics.WSClients.Set(0)
 
 	return &Hub{
-		Broadcast: make(chan models.WallMessage, 255),
+		Broadcast: make(chan models.WallMessage, ChannelSize),
 		register:  make(chan *Client),
 		clients:   make(map[*Client]bool),
 	}
@@ -110,7 +112,7 @@ func (h *Hub) WsHandler(c *gin.Context) {
 		return
 	}
 
-	client := &Client{hub: h, conn: conn, send: make(chan models.WallMessage, 255)}
+	client := &Client{hub: h, conn: conn, send: make(chan models.WallMessage, ChannelSize)}
 	client.hub.register <- client
 
 	go client.writePump()

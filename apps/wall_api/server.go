@@ -142,7 +142,3 @@ func initDB(dbUser, dbPassword, dbHost, dbName string, otlpEndpoint string) *gor
 func healthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
-
-func status(c *gin.Context) {
-
-}

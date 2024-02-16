@@ -34,7 +34,6 @@ func NewStatusRouter(db *gorm.DB, wsHub *ws.Hub, version string) *StatusRouter {
 	return &sr
 }
 
-// Returns the following status data in a JSON Object
 func (sr *StatusRouter) GetStatus(c *gin.Context) {
 	var messageCount int64
 	bi, ok := debug.ReadBuildInfo()
