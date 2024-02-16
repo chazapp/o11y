@@ -43,6 +43,7 @@ func NewWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.
 	})
 
 	mr := api.NewMessageRouter(db, wsHub)
+	sr := api.NewStatusRouter(db, wsHub, Version)
 
 	r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
 		currentSpan := trace.SpanFromContext(param.Request.Context())
@@ -77,6 +78,7 @@ func NewWallAPIEngine(db *gorm.DB, wsHub *ws.Hub, allowedOrigins []string) *gin.
 	r.GET("/message/:id", httpmetrics.Handler("/message/:id", metricsMiddleware), mr.GetMessage)
 	r.GET("/messages", httpmetrics.Handler("/messages", metricsMiddleware), mr.GetMessages)
 	r.GET("/ws", httpmetrics.Handler("/ws", metricsMiddleware), wsHub.WsHandler)
+	r.GET("/status", httpmetrics.Handler("/status", metricsMiddleware), sr.GetStatus)
 
 	return r
 }

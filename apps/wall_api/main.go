@@ -11,6 +11,7 @@ import (
 var (
 	DefaultPort    = 8080
 	DefaultOpsPort = 8081
+	Version        = "dev"
 )
 
 func main() {

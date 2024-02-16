@@ -98,7 +98,10 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
-      
+      - name: Compute git version
+        run: git describe --tags
+        id: git-tags
+
       - name: Build and push Docker 
         uses: docker/build-push-action@v5
         with:
@@ -107,6 +110,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
+          build-args: |
+            VERSION=${{ steps.git-tags.outputs.stdout }}
 
 
       - name: Container scan
