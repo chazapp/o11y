@@ -38,7 +38,7 @@ resource "helm_release" "grafana-agent" {
   name       = "grafana-agent"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "grafana-agent"
-  version    = "0.31.1"
+  version    = "0.32.0"
 
   namespace  = var.tools_namespace
 
