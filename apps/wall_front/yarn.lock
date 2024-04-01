@@ -1568,18 +1568,18 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
-"@grafana/faro-core@^1.3.9":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-core/-/faro-core-1.3.9.tgz#69d7c4239c3507028eb7a6f21f1213278b11194a"
-  integrity sha512-zBghaYNKwMwiyErUYEYbx/E/HTdy3tFS7Oy+1f5CiIi5+iUSYidgeQqKdd4vKB1EtDn1MI5iA2dXBavxLNYGlg==
-  dependencies:
-    "@opentelemetry/api" "^1.7.0"
-    "@opentelemetry/otlp-transformer" "^0.48.0"
-
 "@grafana/faro-core@^1.4.2":
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@grafana/faro-core/-/faro-core-1.4.2.tgz#01f731dbb06494692ba3926db5a744ae8a7fe6e7"
   integrity sha512-gbEXApUNvgUSTuYtvO+8ZlMKyZCF/lSHT5jWhjPVIgPzbPXx0OJn6TEPCq7wrENHnYhh3LXpkSca6WtcqcxouA==
+  dependencies:
+    "@opentelemetry/api" "^1.7.0"
+    "@opentelemetry/otlp-transformer" "^0.48.0"
+
+"@grafana/faro-core@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@grafana/faro-core/-/faro-core-1.5.0.tgz#5b4f32cc6ce2cba35e2502e3ab7576ecf6932fd4"
+  integrity sha512-EEAW6Cy0lwg5rpu0I6dBRs384jN92zkvmstKDqV+OKbnUm686+5nPbXYeensEDd+sl49JUaHoERpuj/g8Y5DVA==
   dependencies:
     "@opentelemetry/api" "^1.7.0"
     "@opentelemetry/otlp-transformer" "^0.48.0"
@@ -1593,15 +1593,6 @@
     "@grafana/faro-web-tracing" "^1.4.2"
     hoist-non-react-statics "^3.3.2"
 
-"@grafana/faro-web-sdk@^1.3.9":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-web-sdk/-/faro-web-sdk-1.3.9.tgz#ebf8c645cbcc3a22e31a89d0e7e94f9d09f88c5f"
-  integrity sha512-lrUhzITfgpEtOP4I/HbhIh0UCTNpcAWveFN7bzdCJ/N/G3YULd6jXBuBoHcC25Fx3WtLChljzJ5IJ02HTA2Q9g==
-  dependencies:
-    "@grafana/faro-core" "^1.3.9"
-    ua-parser-js "^1.0.32"
-    web-vitals "^3.1.1"
-
 "@grafana/faro-web-sdk@^1.4.2":
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/@grafana/faro-web-sdk/-/faro-web-sdk-1.4.2.tgz#28b046354a1d4b1304295158a7b6623c76b77194"
@@ -1611,12 +1602,21 @@
     ua-parser-js "^1.0.32"
     web-vitals "^3.1.1"
 
-"@grafana/faro-web-tracing@^1.3.5":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-web-tracing/-/faro-web-tracing-1.3.9.tgz#5c228ca4781b12720b845173cf4e0df15c27948a"
-  integrity sha512-MZXotqt4Un+jSoB9JgoMRGAlAuMpWWF7NvZW6Y1yuDX340Xfrnj0Xm0C3uZss9UiDatBqMHNVydAK8OQNmRcHA==
+"@grafana/faro-web-sdk@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@grafana/faro-web-sdk/-/faro-web-sdk-1.5.0.tgz#776165c300d342bf117e9305baabbe4260913810"
+  integrity sha512-z5K702OaaUVRS4Si49yz9zTwBmUa3VZoLONr65OVBt5ED5cNdStnatKlpAU5o4PglxxnNhoY7IfVONycbAG0tw==
   dependencies:
-    "@grafana/faro-web-sdk" "^1.3.9"
+    "@grafana/faro-core" "^1.5.0"
+    ua-parser-js "^1.0.32"
+    web-vitals "^3.1.1"
+
+"@grafana/faro-web-tracing@^1.3.5":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@grafana/faro-web-tracing/-/faro-web-tracing-1.5.0.tgz#9f2de353be8c425c2a7a88b5ebd8e736f1e14fec"
+  integrity sha512-Ig1c6yW5mXmiLXP06E86me5ybTDYuDN8FoZVbYlY1iBd8JQHnob3NQZP1Xfu33uAJSnPsPGAoKPRRxZvQ0AEyg==
+  dependencies:
+    "@grafana/faro-web-sdk" "^1.5.0"
     "@opentelemetry/api" "^1.7.0"
     "@opentelemetry/context-zone" "^1.18.1"
     "@opentelemetry/core" "^1.18.1"
@@ -9810,9 +9810,9 @@ require-from-string@^2.0.2:
   integrity sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==
 
 require-in-the-middle@^7.1.1:
-  version "7.2.1"
-  resolved "https://registry.yarnpkg.com/require-in-the-middle/-/require-in-the-middle-7.2.1.tgz#0d1f5e86a69aa14322f5951b924f02ad75f70b6b"
-  integrity sha512-u5XngygsJ+XV2dBV/Pl4SrcNpUXQfmYmXtuFeHDXfzk4i4NnGnret6xKWkkJHjMHS/16yMV9pEAlAunqmjllkA==
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/require-in-the-middle/-/require-in-the-middle-7.3.0.tgz#ce64a1083647dc07b3273b348357efac8a9945c9"
+  integrity sha512-nQFEv9gRw6SJAwWD2LrL0NmQvAcO7FBwJbwmr2ttPAacfy0xuiOjE5zt+zM4xDyuyvUaxBi/9gb2SoCyNEVJcw==
   dependencies:
     debug "^4.1.1"
     module-details-from-path "^1.0.3"
