@@ -12,7 +12,7 @@ require (
 	github.com/go-playground/assert/v2 v2.2.0
 	github.com/gorilla/websocket v1.5.1
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.7
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/rs/zerolog v1.32.0
 	github.com/slok/go-http-metrics v0.12.0
 	github.com/urfave/cli/v2 v2.27.2
