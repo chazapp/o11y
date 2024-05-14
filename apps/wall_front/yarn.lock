@@ -5543,9 +5543,9 @@ eslint-plugin-jsx-a11y@^6.5.1:
     semver "^7.5.3"
 
 eslint-plugin-playwright@^1.0.1:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-playwright/-/eslint-plugin-playwright-1.6.0.tgz#29f4af0e939f17d94b66f301350fb5267c8e1e2f"
-  integrity sha512-tI1E/EDbHT4Fx5KvukUG3RTIT0gk44gvTP8bNwxLCFsUXVM98ZJG5zWU6Om5JOzH9FrmN4AhMu/UKyEsu0ZoDA==
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-playwright/-/eslint-plugin-playwright-1.6.1.tgz#df1221697b59fbe2f69d1f7cda7063d9b060ce52"
+  integrity sha512-pfcaeAENH0jZEuUxynfVgMlLY9CSp68D9Ja2z32Xq5zhWCN1HoixSHOzhYVuh/N6fYwtBp4kLu/+IIUTXBTGZg==
   dependencies:
     globals "^13.23.0"
 
