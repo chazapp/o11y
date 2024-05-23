@@ -1575,14 +1575,6 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.2.tgz#d8bae93ac8b815b2bd7a98078cf91e2724ef11e5"
   integrity sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==
 
-"@grafana/faro-core@^1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-core/-/faro-core-1.7.2.tgz#1eee0c75a942860457bb28f1b9a8625d1dad4e69"
-  integrity sha512-nQ9O49NufrY2gsbrMwgsLw2e9/BZVIW6rK5b+2KqLrS6mp7rhnhV26LPnzsFTEHmIXYJJKmKSuRpeAYVoiyk7w==
-  dependencies:
-    "@opentelemetry/api" "^1.7.0"
-    "@opentelemetry/otlp-transformer" "^0.48.0"
-
 "@grafana/faro-core@^1.7.3":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@grafana/faro-core/-/faro-core-1.7.3.tgz#44c46a640e3fc613c7ebb0868d66b2db7c863424"
@@ -1600,15 +1592,6 @@
     "@grafana/faro-web-tracing" "^1.7.3"
     hoist-non-react-statics "^3.3.2"
 
-"@grafana/faro-web-sdk@^1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-web-sdk/-/faro-web-sdk-1.7.2.tgz#f031bc80b6ac143b74452fc8768c63a935f7fab3"
-  integrity sha512-C/75be0XnvHQIKlPH7RCCc+/yMLlhnmqalf8rQy/rHunoYtvI9aaIBoeKpZWxNrW1DPcQL9cWu5g37B14l28lg==
-  dependencies:
-    "@grafana/faro-core" "^1.7.2"
-    ua-parser-js "^1.0.32"
-    web-vitals "^3.1.1"
-
 "@grafana/faro-web-sdk@^1.7.3":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@grafana/faro-web-sdk/-/faro-web-sdk-1.7.3.tgz#8be692fb4f5132ff8f06a5c028993feee12063f1"
@@ -1618,25 +1601,7 @@
     ua-parser-js "^1.0.32"
     web-vitals "^3.1.1"
 
-"@grafana/faro-web-tracing@^1.3.5":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@grafana/faro-web-tracing/-/faro-web-tracing-1.7.2.tgz#7fa3309f634f47ed73cc3c311f5d643c10baaba3"
-  integrity sha512-OasRV6fAk1IcNTjm85+Cau7m/0Qsvj9wU7wRQofVX/4FJ0Av60RbNtQlksVrqV9mPnkMrUHUc8S0hTiUqcqTxw==
-  dependencies:
-    "@grafana/faro-web-sdk" "^1.7.2"
-    "@opentelemetry/api" "^1.7.0"
-    "@opentelemetry/context-zone" "^1.18.1"
-    "@opentelemetry/core" "^1.18.1"
-    "@opentelemetry/exporter-trace-otlp-http" "^0.48.0"
-    "@opentelemetry/instrumentation" "^0.48.0"
-    "@opentelemetry/instrumentation-fetch" "^0.48.0"
-    "@opentelemetry/instrumentation-xml-http-request" "^0.48.0"
-    "@opentelemetry/otlp-transformer" "^0.48.0"
-    "@opentelemetry/resources" "^1.18.1"
-    "@opentelemetry/sdk-trace-web" "^1.18.1"
-    "@opentelemetry/semantic-conventions" "^1.18.1"
-
-"@grafana/faro-web-tracing@^1.7.3":
+"@grafana/faro-web-tracing@^1.3.5", "@grafana/faro-web-tracing@^1.7.3":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@grafana/faro-web-tracing/-/faro-web-tracing-1.7.3.tgz#5bdac76074d03fa1e344252a051a49e618233e30"
   integrity sha512-JQQ5qO3kmU132ISzaI61uuvKR4ytkxeojRtgeitci8hpif6czz5hmglUbgCxvNaUlQyjQcUF3m0Wn7fm0PIbug==
