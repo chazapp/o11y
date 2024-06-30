@@ -8,7 +8,7 @@ COPY . .
 ENV CGO_ENABLED=0
 RUN go build -ldflags="-X main.Version=$VERSION" -o wall_api
 
-FROM alpine:3.20.0
+FROM alpine:3.20.1
 WORKDIR /app
 COPY --from=builder /app /app
 RUN adduser -D -H -h /app appuser
