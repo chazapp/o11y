@@ -2,7 +2,7 @@ module github.com/chazapp/o11y/apps/wall_api
 
 go 1.22
 
-toolchain go1.22.5
+toolchain go1.22.6
 
 require (
 	github.com/gin-contrib/cors v1.7.2
