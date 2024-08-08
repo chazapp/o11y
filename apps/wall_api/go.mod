@@ -10,7 +10,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/go-playground/assert/v2 v2.2.0
-	github.com/gorilla/websocket v1.5.1
+	github.com/gorilla/websocket v1.5.3
 	github.com/grafana/pyroscope-go/godeltaprof v0.1.7
 	github.com/prometheus/client_golang v1.19.1
 	github.com/rs/zerolog v1.33.0
