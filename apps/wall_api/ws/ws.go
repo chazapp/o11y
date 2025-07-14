@@ -70,7 +70,7 @@ func (c *Client) writePump() {
 	ticker := time.NewTicker(time.Duration(WsTimeoutSeconds) * time.Second)
 	defer func() {
 		ticker.Stop()
-		c.conn.Close()
+		_ = c.conn.Close()
 		metrics.WSClients.Dec()
 		delete(c.hub.clients, c)
 		log.Error().Msg("Removed wwebsocket via defer")
