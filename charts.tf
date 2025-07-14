@@ -55,7 +55,7 @@ resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "loki"
-  version    = "5.48.0"
+  version    = "6.31.0"
 
   namespace  = var.tools_namespace
 
