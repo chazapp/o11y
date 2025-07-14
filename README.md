@@ -14,10 +14,9 @@ A DevOps shop showcase of observability in action.
 A Terraform project that deploys to a Minikube cluster the following tools:
 
 - Grafana
-- Grafana-Agent
-- Kube-Prometheus-Stack
+- Alloy
 - Loki
-- Promtail
+- Kube-Prometheus-Stack
 - Tempo
 - Minio
 - Pyroscope

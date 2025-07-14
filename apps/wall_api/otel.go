@@ -34,9 +34,8 @@ func initProvider(otlpEndpoint string) (func(context.Context) error, error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Second)
 	defer cancel()
 
-	conn, err := grpc.DialContext(ctx, otlpEndpoint,
+	conn, err := grpc.NewClient(otlpEndpoint,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithBlock(),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gRPC connection to collector: %w", err)

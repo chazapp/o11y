@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type WallMessage struct {
 	ID                uint      `json:"id" gorm:"primary_key"`

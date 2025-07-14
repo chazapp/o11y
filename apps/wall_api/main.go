@@ -61,6 +61,7 @@ func main() {
 						Name:    "allowedOrigins",
 						EnvVars: []string{"ALLOWED_ORIGINS"},
 						Usage:   "CORS Allowed Origins",
+						Value:   cli.NewStringSlice("*"),
 					},
 					&cli.StringFlag{
 						Name:  "otlp",
