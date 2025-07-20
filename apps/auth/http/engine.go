@@ -110,7 +110,11 @@ func (r *AuthRouter) Login(c *gin.Context) {
 }
 
 func Run(ctx context.Context, port int, host string, db string, jwtPrivateKeyPath string, jwtPublicKeyPath string) error {
-	engine := gin.Default()
+	engine := gin.New()
+	engine.Use(gin.Recovery())
+	engine.Use(gin.LoggerWithConfig(gin.LoggerConfig{
+		SkipPaths: []string{"/health", "/metrics", "/.well-known/jwks.json"},
+	}))
 	authRouter := NewAuthRouter(db, jwtPrivateKeyPath, jwtPublicKeyPath, false)
 
 	engine.POST("/register", authRouter.Register)

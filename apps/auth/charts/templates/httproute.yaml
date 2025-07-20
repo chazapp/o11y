@@ -1,0 +1,29 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "auth.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+  - name: o11y-gateway
+    kind: Gateway
+  hostnames:
+  {{- range .Values.ingress.hosts }}
+    - {{ .host | quote }}
+  {{- end }}
+  rules:
+  {{- range .Values.ingress.hosts }}
+  - matches:
+    {{- range .paths }}
+    - path:
+        type: {{ .pathType }}
+        value: {{ .path }}
+    {{- end }}
+    backendRefs:
+    - name: {{ $.Release.Name }}
+      kind: Service
+      port: {{ $.Values.service.port }}
+  {{- end }}
+{{- end }}
