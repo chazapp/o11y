@@ -1,0 +1,28 @@
+---
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: root-o11y-https-redirect
+spec:
+  parentRefs:
+    - name: o11y-gateway
+      sectionName: root-http
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+---
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: api-o11y-https-redirect
+spec:
+  parentRefs:
+    - name: o11y-gateway
+      sectionName: api-http
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https

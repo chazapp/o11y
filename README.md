@@ -28,10 +28,15 @@ It also deploys the following example services:
 
 ## Minikube
 
-To test the complete stack, create a Minikube cluster then apply with Terraform
+To test the complete stack, create a Minikube cluster then apply with Terraform.
+
+The API Gateway requires `minikube tunnel` to be running in order for the LoadBalancer service to bind to an IP address.
+If the tunnel is not up, the Chart will fail to install and the terraform process won't be able to finish.
+
 
 ``` bash
 $ minikube start
+$ minikube tunnel &> /dev/null & # runs tunnel in the background
 ...
 $ terraform apply
 ...
