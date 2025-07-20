@@ -12,6 +12,7 @@ import (
 // Claims represents the JWT claims used in the authentication system
 type Claims struct {
 	Email     string `json:"email"`
+	Issuer    string `json:"iss"`
 	ExpiresAt int64  `json:"exp"`
 }
 
@@ -51,6 +52,7 @@ func GenerateJWT(duration, email string, jwkPrivate jose.JSONWebKey) (string, er
 
 	claims := Claims{
 		Email:     email,
+		Issuer:    "o11y",
 		ExpiresAt: time.Now().Add(d).Unix(),
 	}
 

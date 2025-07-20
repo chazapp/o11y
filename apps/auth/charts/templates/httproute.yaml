@@ -21,6 +21,12 @@ spec:
         type: {{ .pathType }}
         value: {{ .path }}
     {{- end }}
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /
     backendRefs:
     - name: {{ $.Release.Name }}
       kind: Service
