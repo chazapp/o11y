@@ -4,6 +4,18 @@ resource "kubernetes_namespace" "tools_namespace" {
   }
 }
 
+resource "kubernetes_namespace" "istio-system" {
+  metadata {
+    name = "istio-system"
+  }
+}
+
+resource "kubernetes_namespace" "istio-gateway" {
+  metadata {
+    name = "istio-gateway"
+  }
+}
+
 resource "helm_release" "kube-prometheus-stack" {
   name       = "kube-prometheus-stack"
   repository = "https://prometheus-community.github.io/helm-charts"
@@ -125,25 +137,39 @@ resource "kubernetes_config_map" "alloy-config" {
   }
 }
 
-resource "kubernetes_namespace" "apps_namespace" {
-  metadata {
-    name = "apps"
+resource "null_resource" "gateway_crds" {
+  provisioner "local-exec" {
+    command = "kubectl apply --context minikube -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml"
   }
+  depends_on = [ helm_release.kube-prometheus-stack ]
 }
 
-resource "helm_release" "wall_api" {
-  name      = "wall-api"
-  chart = "${path.module}/apps/wall_api/chart"
-  version = "2.4.0"
-  namespace = "apps"
-  depends_on = [
-    helm_release.kube-prometheus-stack
+resource "helm_release" "istio-base" {
+  name = "istio-base"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  chart = "base"
+  namespace = "istio-system"
+  depends_on = [ 
+    null_resource.gateway_crds
   ]
 }
 
-resource "helm_release" "wall_front" {
-  name      = "wall-front"
-  chart = "${path.module}/apps/wall_front/chart"
-  version = "2.4.0"
-  namespace = "apps"
+resource "helm_release" "istiod" {
+  name = "istiod"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  chart = "istiod"
+  namespace = "istio-system"
+  depends_on = [ 
+    helm_release.istio-base
+  ]
+}
+
+resource "helm_release" "istio-gateway" {
+  name = "istio-gateway"
+  repository = "https://istio-release.storage.googleapis.com/charts"
+  chart = "gateway"
+  namespace = "istio-gateway"
+  depends_on = [ 
+    helm_release.istiod
+  ]
 }
