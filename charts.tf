@@ -34,23 +34,6 @@ resource "helm_release" "grafana" {
   ]
 }
 
-# resource "helm_release" "grafana-agent" {
-#   name       = "grafana-agent"
-#   repository = "https://grafana.github.io/helm-charts/"
-#   chart      = "grafana-agent"
-#   version    = "0.42.0"
-
-#   namespace  = var.tools_namespace
-
-#   values = [
-#     var.grafana-agent-override != null ? var.grafana-agent-override : "${file("${path.module}/configs/grafana-agent.yaml")}"
-#   ]
-  
-#   depends_on = [
-#     helm_release.kube-prometheus-stack
-#   ]
-# }
-
 resource "helm_release" "loki" {
   name       = "loki"
   repository = "https://grafana.github.io/helm-charts/"
@@ -82,23 +65,6 @@ resource "helm_release" "minio" {
     helm_release.kube-prometheus-stack
   ]
 }
-
-# resource "helm_release" "promtail" {
-#   name       = "promtail"
-#   repository = "https://grafana.github.io/helm-charts/"
-#   chart      = "promtail"
-#   version    = "6.16.4"
-
-#   namespace  = var.tools_namespace
-
-#   values = [
-#     var.promtail-override != null ? var.promtail-override : "${file("${path.module}/configs/promtail.yaml")}"
-#   ]
-
-#   depends_on = [
-#     helm_release.kube-prometheus-stack
-#   ]
-# }
 
 resource "helm_release" "tempo" {
   name       = "tempo"
@@ -142,7 +108,7 @@ resource "helm_release" "alloy" {
   namespace = var.tools_namespace
 
   values = [
-    "${file("${path.module}/configs/alloy.yaml")}",
+    "${file("${path.module}/configs/alloy/alloy.yaml")}",
   ]
   depends_on = [ 
     kubernetes_config_map.alloy-config
@@ -155,7 +121,7 @@ resource "kubernetes_config_map" "alloy-config" {
     namespace = var.tools_namespace
   }
   data = {
-    config = "${file("${path.module}/configs/config.alloy")}"
+    config = "${file("${path.module}/configs/alloy/config.alloy")}"
   }
 }
 
