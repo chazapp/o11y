@@ -1,0 +1,16 @@
+controller:
+  type: "deployment"
+
+serviceMonitor:
+  enabled: true
+
+alloy:
+  configMap:
+    create: false
+    name: alloy-config
+    key: config
+
+ingress:
+  enabled: true
+  hosts:
+    - alloy.local
