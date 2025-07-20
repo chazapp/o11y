@@ -1,0 +1,33 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: o11y-gateway
+spec:
+  gatewayClassName: istio
+  listeners:
+    - name: root-http
+      protocol: HTTP
+      port: 80
+      hostname: o11y.local
+    - name: root-https
+      protocol: HTTPS
+      port: 443
+      hostname: o11y.local
+      tls:
+        certificateRefs:
+          - kind: Secret
+            group: ""
+            name: gateway-certs
+    - name: api-http
+      protocol: HTTP
+      port: 80
+      hostname: api.o11y.local
+    - name: api-https
+      protocol: HTTPS
+      port: 443
+      hostname: api.o11y.local
+      tls:
+        certificateRefs:
+          - kind: Secret
+            group: ""
+            name: gateway-certs
