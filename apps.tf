@@ -62,7 +62,7 @@ resource "helm_release" "auth" {
 resource "null_resource" "keygen" {
   provisioner "local-exec" {
     command = <<EOT
-      go install github.com/go-jose/go-jose/jose-util
+      go install github.com/go-jose/go-jose/jose-util@latest
       mkdir -p .runtime/ && cd .runtime
       jose-util generate-key -use sig -alg RS256
       mv jwk-*-priv.json privateKey.json
