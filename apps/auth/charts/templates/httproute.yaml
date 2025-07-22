@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.gateway.enabled -}}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -9,12 +9,13 @@ spec:
   parentRefs:
   - name: o11y-gateway
     kind: Gateway
+    sectionName: api-https  # Only attach to HTTPS listener
   hostnames:
-  {{- range .Values.ingress.hosts }}
+  {{- range .Values.gateway.hosts }}
     - {{ .host | quote }}
   {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+  {{- range .Values.gateway.hosts }}
   - matches:
     {{- range .paths }}
     - path:

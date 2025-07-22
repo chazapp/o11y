@@ -45,15 +45,33 @@ resource "helm_release" "auth" {
   namespace = "apps"
   depends_on = [
     helm_release.gateway,
+    data.external.keygen
   ]
 
   set_sensitive {
     name  = "secrets.jwt.privateKey"
-    value = base64encode(file("${path.module}/apps/auth/privateKey.json"))
+    value = data.external.keygen.result.privateKey
   }
 
   set_sensitive {
     name  = "secrets.jwt.publicKey"
-    value = base64encode(file("${path.module}/apps/auth/publicKey.json"))
+    value = data.external.keygen.result.publicKey
   }
+}
+
+resource "null_resource" "keygen" {
+  provisioner "local-exec" {
+    command = <<EOT
+      mkdir -p .runtime/ && cd .runtime
+      jose-util generate-key -use sig -alg RS256
+      mv jwk-*-priv.json privateKey.json
+      mv jwk-*-pub.json publicKey.json
+    EOT
+  }
+}
+
+data "external" "keygen" {
+  depends_on = [ null_resource.keygen ]
+
+  program = ["bash", "-c", "./scripts/tf-get-jwt-keys.sh"]
 }

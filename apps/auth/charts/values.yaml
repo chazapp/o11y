@@ -9,7 +9,7 @@ service:
   type: ClusterIP
   port: 8080
 
-ingress:
+gateway:
   enabled: true
   hosts:
     - host: api.o11y.local

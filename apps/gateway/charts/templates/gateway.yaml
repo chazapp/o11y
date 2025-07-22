@@ -9,6 +9,9 @@ spec:
       protocol: HTTP
       port: 80
       hostname: o11y.local
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
     - name: root-https
       protocol: HTTPS
       port: 443
@@ -22,6 +25,9 @@ spec:
       protocol: HTTP
       port: 80
       hostname: api.o11y.local
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
     - name: api-https
       protocol: HTTPS
       port: 443
