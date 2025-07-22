@@ -2,11 +2,7 @@ serviceMonitor:
   enabled: true
 
 ingress:
-  enabled: true
-  hosts:
-    - grafana.local
-  tls: []
-
+  enabled: false # Ingress are managed by the Gateway chart
 persistence:
   enabled: true
 

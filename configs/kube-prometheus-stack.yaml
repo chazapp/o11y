@@ -1,11 +1,6 @@
 prometheus:
   ingress:
-    enabled: true
-    hosts:
-      - prometheus.local
-    path:
-      - /
-    tls: []
+    enabled: false # Ingress are managed by the Gateway chart
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
     enableRemoteWriteReceiver: true

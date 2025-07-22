@@ -9,7 +9,7 @@ spec:
   parentRefs:
   - name: o11y-gateway
     kind: Gateway
-    sectionName: api-https  # Only attach to HTTPS listener
+    sectionName: https
   hostnames:
   {{- range .Values.gateway.hosts }}
     - {{ .host | quote }}

@@ -1,0 +1,36 @@
+---
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: grafana-http-route
+  namespace: monitoring
+spec:
+  parentRefs:
+    - name: o11y-gateway
+      namespace: apps
+      sectionName: https
+  hostnames:
+    - "grafana.o11y.local"
+  rules:
+    - backendRefs:
+      - name: grafana
+        port: 80
+
+---
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1
+metadata:
+  name: prometheus-http-route
+  namespace: monitoring
+spec:
+  parentRefs:
+    - name: o11y-gateway
+      namespace: apps
+      sectionName: https
+  hostnames:
+    - "prometheus.o11y.local"
+  rules:
+    - backendRefs:
+      - name: kube-prometheus-stack-prometheus
+        port: 9090
+        

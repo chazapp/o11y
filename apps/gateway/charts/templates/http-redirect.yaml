@@ -5,12 +5,7 @@ metadata:
 spec:
   parentRefs:
   - name: o11y-gateway
-    sectionName: root-http
-  - name: o11y-gateway
-    sectionName: api-http
-  hostnames:
-  - "o11y.local"
-  - "api.o11y.local"
+    sectionName: http
   rules:
   - filters:
     - type: RequestRedirect
