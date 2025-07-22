@@ -37,3 +37,42 @@ resource "helm_release" "landing" {
   namespace = "apps"
   depends_on = [ helm_release.gateway ]
 }
+
+resource "helm_release" "auth" {
+  name      = "auth"
+  chart     = "${path.module}/apps/auth/charts"
+  version   = "0.1.0"
+  namespace = "apps"
+  depends_on = [
+    helm_release.gateway,
+    data.external.keygen
+  ]
+
+  set_sensitive {
+    name  = "secrets.jwt.privateKey"
+    value = data.external.keygen.result.privateKey
+  }
+
+  set_sensitive {
+    name  = "secrets.jwt.publicKey"
+    value = data.external.keygen.result.publicKey
+  }
+}
+
+resource "null_resource" "keygen" {
+  provisioner "local-exec" {
+    command = <<EOT
+      go install github.com/go-jose/go-jose/v4/jose-util@latest
+      mkdir -p .runtime/ && cd .runtime
+      jose-util generate-key -use sig -alg RS256
+      mv jwk-*-priv.json privateKey.json
+      mv jwk-*-pub.json publicKey.json
+    EOT
+  }
+}
+
+data "external" "keygen" {
+  depends_on = [ null_resource.keygen ]
+
+  program = ["bash", "-c", "./scripts/tf-get-jwt-keys.sh"]
+}

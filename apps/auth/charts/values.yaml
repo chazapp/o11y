@@ -1,0 +1,34 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/chazapp/o11y/auth
+  tag: 1.0.1
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+gateway:
+  enabled: true
+  hosts:
+    - host: api.o11y.local
+      paths:
+        - path: /auth
+          pathType: PathPrefix
+
+postgresql:
+  name: auth-postgresql
+  serviceName: auth-postgresql
+  database: auth
+  user: admin
+  password: password
+  storageClassName: standard
+  storageSize: 1Gi
+
+secrets:
+  jwt:
+    privateKey: |
+      # Base64 encoded private key will go here
+    publicKey: |
+      # Base64 encoded public key will go here

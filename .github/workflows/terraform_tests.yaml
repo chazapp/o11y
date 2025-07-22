@@ -18,6 +18,10 @@ jobs:
       - uses: medyagh/setup-minikube@latest
         with:
           minikube-version: 1.31.2
+      - name: Setup Golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
       - run: minikube tunnel &> /dev/null &
       - run: terraform init
       - run: terraform apply -auto-approve
