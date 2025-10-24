@@ -141,7 +141,6 @@ resource "null_resource" "gateway_crds" {
   provisioner "local-exec" {
     command = "kubectl apply --context minikube -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml"
   }
-  depends_on = [ helm_release.kube-prometheus-stack ]
 }
 
 resource "helm_release" "istio-base" {

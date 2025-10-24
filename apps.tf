@@ -27,7 +27,9 @@ resource "helm_release" "gateway" {
   chart = "${path.module}/apps/gateway/charts"
   version = "1.0.0"
   namespace = "apps"
-  depends_on = [ helm_release.istio-gateway, kubernetes_secret.gateway-certs ]
+  depends_on = [
+    helm_release.istio-gateway, kubernetes_secret.gateway-certs, null_resource.gateway_crds
+  ]
 }
 
 resource "helm_release" "landing" {
