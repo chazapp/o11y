@@ -36,7 +36,7 @@ func NewAuthRouter(dbConn, jwtPrivateKeyPath, jwtPublicKeyPath string, testing b
 	}
 	var db *gorm.DB
 	if !testing {
-		db, err := gorm.Open(postgres.Open(dbConn), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dbConn), &gorm.Config{})
 		if err != nil {
 			log.Fatalf("failed to connect to database: %v", err)
 		}
@@ -84,28 +84,21 @@ func (r *AuthRouter) Login(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Invalid request"})
 		return
 	}
-
-	// Find user
 	var user models.User
 	if err := r.db.Where("email = ?", req.Email).First(&user).Error; err != nil {
 		c.JSON(401, gin.H{"error": "Invalid credentials"})
 		return
 	}
-
-	// Verify password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		c.JSON(401, gin.H{"error": "Invalid credentials"})
 		return
 	}
-
-	// Generate JWT with 24h expiration
 	token, err := jwt.GenerateJWT("24h", user.Email, r.jwkPrivate)
 	if err != nil {
 		log.Printf("failed to generate JWT: %v", err)
 		c.JSON(500, gin.H{"error": "Failed to generate token"})
 		return
 	}
-
 	c.JSON(200, gin.H{"token": token, "email": user.Email})
 }
 
@@ -120,7 +113,6 @@ func Run(ctx context.Context, port int, host string, db string, jwtPrivateKeyPat
 	engine.POST("/register", authRouter.Register)
 	engine.POST("/login", authRouter.Login)
 
-	// Serve the JWKS (JSON Web Key Set) containing the public key
 	engine.GET("/.well-known/jwks.json", func(c *gin.Context) {
 		jwks := JWKS{
 			Keys: []jose.JSONWebKey{authRouter.jwkPublic},
