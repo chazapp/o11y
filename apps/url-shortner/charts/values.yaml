@@ -1,7 +1,10 @@
 replicaCount: 1
 
+labels:
+  o11y.authentication: required
+
 image:
-  repository: ghcr.io/chazapp/o11y/auth
+  repository: ghcr.io/chazapp/o11y/url-shortner
   tag: 1.0.2
   pullPolicy: IfNotPresent
 
@@ -14,21 +17,14 @@ gateway:
   hosts:
     - host: api.o11y.local
       paths:
-        - path: /auth
+        - path: /short
           pathType: PathPrefix
 
 postgresql:
-  name: auth-postgresql
-  serviceName: auth-postgresql
-  database: auth
+  name: url-shortner-postgresql
+  serviceName: url-shortner-postgresql
+  database: url_shortner
   user: admin
   password: password
   storageClassName: standard
   storageSize: 1Gi
-
-secrets:
-  jwt:
-    privateKey: |
-      # Base64 encoded private key will go here
-    publicKey: |
-      # Base64 encoded public key will go here

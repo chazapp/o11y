@@ -1,0 +1,31 @@
+apiVersion: security.istio.io/v1
+kind: RequestAuthentication
+metadata:
+  name: o11y
+spec:
+  targetRefs:
+    - name: o11y-gateway
+      kind: Gateway
+      group: gateway.networking.k8s.io
+  jwtRules:
+  - issuer: "o11y"
+    jwksUri: http://auth.apps:8080/.well-known/jwks.json
+
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: o11y-require-jwt
+spec:
+  targetRefs:
+    - name: o11y-gateway
+      kind: Gateway
+      group: gateway.networking.k8s.io
+  action: ALLOW
+  rules:
+    - when:
+      - key: "request.auth.claims[iss]"
+        values: ["o11y"]
+    - to:
+      - operation:
+          paths: ["/auth/*"]
