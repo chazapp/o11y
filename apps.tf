@@ -40,6 +40,14 @@ resource "helm_release" "landing" {
   depends_on = [ helm_release.gateway ]
 }
 
+resource "helm_release" "url-shortner" {
+  name      = "url-shortner"
+  chart     = "${path.module}/apps/url-shortner/charts"
+  version   = "0.1.0"
+  namespace = "apps"
+  depends_on = [ helm_release.gateway ]
+}
+
 resource "helm_release" "auth" {
   name      = "auth"
   chart     = "${path.module}/apps/auth/charts"
