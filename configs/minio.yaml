@@ -96,10 +96,10 @@ users:
 
 
 makeUserJob:
-  resources: {}
+  resources: 
 
 makeBucketJob:
-  resources: {}
+  resources:
 
 makePolicyJob:
-  resources: {}
+  resources:
