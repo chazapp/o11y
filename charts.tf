@@ -123,7 +123,8 @@ resource "helm_release" "alloy" {
     "${file("${path.module}/configs/alloy/alloy.yaml")}",
   ]
   depends_on = [ 
-    kubernetes_config_map.alloy-config
+    kubernetes_config_map.alloy-config,
+    helm_release.kube-prometheus-stack
    ]
 }
 
