@@ -66,7 +66,7 @@ resource "helm_release" "minio" {
   name       = "minio"
   repository = "https://charts.min.io/"
   chart      = "minio"
-  version    = "5.2.0"
+  version    = "5.4.0"
 
   namespace  = var.tools_namespace
 
@@ -123,7 +123,8 @@ resource "helm_release" "alloy" {
     "${file("${path.module}/configs/alloy/alloy.yaml")}",
   ]
   depends_on = [ 
-    kubernetes_config_map.alloy-config
+    kubernetes_config_map.alloy-config,
+    helm_release.kube-prometheus-stack
    ]
 }
 

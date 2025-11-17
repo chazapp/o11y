@@ -93,3 +93,13 @@ users:
   - accessKey: pyroscope
     secretKey: pyroscopepyroscope
     policy: pyroscope
+
+
+makeUserJob:
+  resources: 
+
+makeBucketJob:
+  resources:
+
+makePolicyJob:
+  resources:
