@@ -1,7 +1,6 @@
 name: Terraform tests
 on:
   merge_group:
-  pull_request:
   push:
     paths:
       - configs/**
