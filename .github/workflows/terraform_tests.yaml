@@ -17,10 +17,14 @@ jobs:
       - uses: medyagh/setup-minikube@latest
         with:
           minikube-version: 1.37.0
+          memory: max
+          cpus: max
       - name: Setup Golang
         uses: actions/setup-go@v5
         with:
           go-version: stable
       - run: minikube tunnel &> /dev/null &
+      - name: Setup upterm session
+        uses: owenthereal/action-upterm@v1
       - run: terraform init
       - run: terraform apply -auto-approve
