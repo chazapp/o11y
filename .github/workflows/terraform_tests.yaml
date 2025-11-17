@@ -24,7 +24,5 @@ jobs:
         with:
           go-version: stable
       - run: minikube tunnel &> /dev/null &
-      - name: Setup upterm session
-        uses: owenthereal/action-upterm@v1
       - run: terraform init
       - run: terraform apply -auto-approve
