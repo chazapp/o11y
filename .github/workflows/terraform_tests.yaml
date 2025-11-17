@@ -17,7 +17,7 @@ jobs:
           terraform_version: 1.1.7
       - uses: medyagh/setup-minikube@latest
         with:
-          minikube-version: 1.31.2
+          minikube-version: 1.37.0
       - name: Setup Golang
         uses: actions/setup-go@v5
         with:
