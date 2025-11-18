@@ -55,6 +55,14 @@ func main() {
 						Usage:   "Domain for authentication cookies",
 						Value:   "localhost",
 					},
+					&cli.StringSliceFlag{
+						Name:    "cors-origins",
+						Aliases: []string{"c"},
+						Usage:   "CORS Allowed origin domains",
+						Value: []string{
+							"http://localhost:5173",
+						},
+					},
 				},
 				Usage: "Run the auth HTTP server",
 				Action: func(ctx context.Context, cmd *cli.Command) error {
@@ -64,14 +72,15 @@ func main() {
 					jwtPrivateKeyPath := cmd.String("jwt-priv")
 					jwtPublicKeyPath := cmd.String("jwt-pub")
 					domain := cmd.String("domain")
-
+					corsOrigins := cmd.StringSlice("cors-origins")
 					srv := http.AuthServer{
-						Port:              port,
-						Host:              host,
-						DbConn:            db,
-						JwtPrivateKeyPath: jwtPrivateKeyPath,
-						JwtPublicKeyPath:  jwtPublicKeyPath,
-						Domain:            domain,
+						Port:               port,
+						Host:               host,
+						DbConn:             db,
+						JwtPrivateKeyPath:  jwtPrivateKeyPath,
+						JwtPublicKeyPath:   jwtPublicKeyPath,
+						Domain:             domain,
+						CORSAllowedOrigins: corsOrigins,
 					}
 
 					srv.Run(ctx)

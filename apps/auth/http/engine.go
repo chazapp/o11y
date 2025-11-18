@@ -9,6 +9,7 @@ import (
 
 	"github.com/chazapp/o11y/apps/auth/jwt"
 	"github.com/chazapp/o11y/apps/auth/models"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-jose/go-jose/v4"
 	"golang.org/x/crypto/bcrypt"
@@ -18,12 +19,13 @@ import (
 
 // port int, host string, db string, jwtPrivateKeyPath string, jwtPublicKeyPath string
 type AuthServer struct {
-	Port              int
-	Host              string
-	Domain            string
-	DbConn            string
-	JwtPrivateKeyPath string
-	JwtPublicKeyPath  string
+	Port               int
+	Host               string
+	Domain             string
+	DbConn             string
+	JwtPrivateKeyPath  string
+	JwtPublicKeyPath   string
+	CORSAllowedOrigins []string
 }
 
 type JWKS struct {
@@ -80,28 +82,28 @@ func (r *AuthRouter) Register(c *gin.Context) {
 		Password: string(hashedPassword),
 	}
 	if err := r.db.Create(&user).Error; err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	token, expiry, err := jwt.GenerateJWT("24h", user.Email, r.jwkPrivate)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Failed to generate token"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
 	}
 	c.SetCookie("auth", token, int(expiry), "", r.cfg.Domain, true, true)
-	c.JSON(200, gin.H{"token": token, "email": user.Email})
+	c.JSON(http.StatusOK, gin.H{"token": token, "email": user.Email})
 }
 
 func (r *AuthRouter) Login(c *gin.Context) {
 	var req AuthRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "Invalid request"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 	var user models.User
 	if err := r.db.Where("email = ?", req.Email).First(&user).Error; err != nil {
-		c.JSON(401, gin.H{"error": "Invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
@@ -111,7 +113,7 @@ func (r *AuthRouter) Login(c *gin.Context) {
 	token, expiry, err := jwt.GenerateJWT("24h", user.Email, r.jwkPrivate)
 	if err != nil {
 		log.Printf("failed to generate JWT: %v", err)
-		c.JSON(500, gin.H{"error": "Failed to generate token"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
 	}
 	c.SetCookie("auth", token, int(expiry), "", r.cfg.Domain, true, true)
@@ -120,7 +122,6 @@ func (r *AuthRouter) Login(c *gin.Context) {
 
 func (r *AuthRouter) Me(c *gin.Context) {
 	u, exist := c.Get("user")
-	fmt.Println("/me ????")
 	if !exist {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization header"})
 		return
@@ -179,6 +180,12 @@ func (c *AuthServer) Run(ctx context.Context) error {
 	engine.Use(gin.LoggerWithConfig(gin.LoggerConfig{
 		SkipPaths: []string{"/health", "/metrics", "/.well-known/jwks.json"},
 	}))
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = c.CORSAllowedOrigins
+	corsConfig.AllowCredentials = true
+	engine.Use(cors.New(corsConfig))
+
 	authRouter := NewAuthRouter(c, false)
 
 	engine.POST("/register", authRouter.Register)
