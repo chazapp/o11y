@@ -55,7 +55,7 @@ func TestJWTFlow(t *testing.T) {
 	// Test JWT generation
 	email := "test@example.com"
 	duration := "1h"
-	token, err := GenerateJWT(duration, email, jwkPriv)
+	token, _, err := GenerateJWT(duration, email, jwkPriv)
 	if err != nil {
 		t.Fatalf("Failed to generate JWT: %v", err)
 	}
@@ -78,7 +78,7 @@ func TestJWTFlow(t *testing.T) {
 	}
 
 	// Test expired token
-	expiredToken, err := GenerateJWT("-1h", email, jwkPriv) // Generate token that's already expired
+	expiredToken, _, err := GenerateJWT("-1h", email, jwkPriv) // Generate token that's already expired
 	if err != nil {
 		t.Fatalf("Failed to generate expired JWT: %v", err)
 	}

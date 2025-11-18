@@ -26,7 +26,7 @@ func main() {
 					},
 					&cli.StringFlag{
 						Name:    "host",
-						Aliases: []string{"H"},
+						Aliases: []string{"h"},
 						Usage:   "Host to bind the HTTP server to",
 						Value:   "0.0.0.0",
 					},
@@ -49,6 +49,12 @@ func main() {
 						Usage:    "Path to the JWT public key file",
 						Required: true,
 					},
+					&cli.StringFlag{
+						Name:    "domain",
+						Aliases: []string{"D"},
+						Usage:   "Domain for authentication cookies",
+						Value:   "localhost",
+					},
 				},
 				Usage: "Run the auth HTTP server",
 				Action: func(ctx context.Context, cmd *cli.Command) error {
@@ -57,7 +63,18 @@ func main() {
 					db := cmd.String("db")
 					jwtPrivateKeyPath := cmd.String("jwt-priv")
 					jwtPublicKeyPath := cmd.String("jwt-pub")
-					http.Run(ctx, port, host, db, jwtPrivateKeyPath, jwtPublicKeyPath)
+					domain := cmd.String("domain")
+
+					srv := http.AuthServer{
+						Port:              port,
+						Host:              host,
+						DbConn:            db,
+						JwtPrivateKeyPath: jwtPrivateKeyPath,
+						JwtPublicKeyPath:  jwtPublicKeyPath,
+						Domain:            domain,
+					}
+
+					srv.Run(ctx)
 					return nil
 				},
 			},

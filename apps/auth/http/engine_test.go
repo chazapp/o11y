@@ -61,7 +61,16 @@ func setupTestRouter(t *testing.T) (*gin.Engine, *AuthRouter) {
 	}
 	defer os.Remove(pubKeyPath)
 
-	authRouter := NewAuthRouter(":memory:", privKeyPath, pubKeyPath, true)
+	srv := AuthServer{
+		Port:              8080,
+		Host:              "0.0.0.0",
+		DbConn:            ":memory:",
+		JwtPrivateKeyPath: privKeyPath,
+		JwtPublicKeyPath:  pubKeyPath,
+		Domain:            "localhost",
+	}
+
+	authRouter := NewAuthRouter(&srv, true)
 	authRouter.db = db // Use the in-memory database for testing
 	db.AutoMigrate(&models.User{})
 	engine := gin.Default()
