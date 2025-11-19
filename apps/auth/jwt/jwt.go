@@ -39,16 +39,15 @@ func LoadJWTKeys(jwtPrivateKeyPath, jwtPublicKeyPath string) (jose.JSONWebKey, j
 	return jwkPriv, jwkPub, nil
 }
 
-func GenerateJWT(duration, email string, jwkPrivate jose.JSONWebKey) (string, int64, error) {
+func GenerateJWT(duration, email string, jwkPrivate jose.JSONWebKey) (string, error) {
 	d, err := time.ParseDuration(duration)
 
 	if err != nil {
-		return "", -1, fmt.Errorf("invalid duration format: %w", err)
+		return "", fmt.Errorf("invalid duration format: %w", err)
 	}
-	expiry := time.Now().Add(d).Unix()
 	signer, err := jose.NewSigner(jose.SigningKey{Algorithm: jose.RS256, Key: jwkPrivate.Key}, nil)
 	if err != nil {
-		return "", -1, fmt.Errorf("failed to create signer: %w", err)
+		return "", fmt.Errorf("failed to create signer: %w", err)
 	}
 
 	claims := Claims{
@@ -59,17 +58,17 @@ func GenerateJWT(duration, email string, jwkPrivate jose.JSONWebKey) (string, in
 
 	claimsJSON, err := json.Marshal(claims)
 	if err != nil {
-		return "", -1, fmt.Errorf("failed to marshal claims: %w", err)
+		return "", fmt.Errorf("failed to marshal claims: %w", err)
 	}
 	payload, err := signer.Sign(claimsJSON)
 	if err != nil {
-		return "", -1, fmt.Errorf("failed to sign JWT: %w", err)
+		return "", fmt.Errorf("failed to sign JWT: %w", err)
 	}
 	token, err := payload.CompactSerialize()
 	if err != nil {
-		return "", -1, fmt.Errorf("failed to serialize JWT: %w", err)
+		return "", fmt.Errorf("failed to serialize JWT: %w", err)
 	}
-	return token, expiry, nil
+	return token, nil
 }
 
 // VerifyJWT validates a JWT token and returns the claims if valid

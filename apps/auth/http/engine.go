@@ -86,12 +86,13 @@ func (r *AuthRouter) Register(c *gin.Context) {
 		return
 	}
 
-	token, expiry, err := jwt.GenerateJWT("24h", user.Email, r.jwkPrivate)
+	token, err := jwt.GenerateJWT("24h", user.Email, r.jwkPrivate)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
 	}
-	c.SetCookie("auth", token, int(expiry), "", r.cfg.Domain, true, true)
+	c.SetSameSite(http.SameSiteNoneMode)
+	c.SetCookie("auth", token, 86400, "/", r.cfg.Domain, true, true)
 	c.JSON(http.StatusOK, gin.H{"token": token, "email": user.Email})
 }
 
@@ -110,13 +111,14 @@ func (r *AuthRouter) Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 		return
 	}
-	token, expiry, err := jwt.GenerateJWT("24h", user.Email, r.jwkPrivate)
+	token, err := jwt.GenerateJWT("24h", user.Email, r.jwkPrivate)
 	if err != nil {
 		log.Printf("failed to generate JWT: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
 	}
-	c.SetCookie("auth", token, int(expiry), "", r.cfg.Domain, true, true)
+	c.SetSameSite(http.SameSiteNoneMode)
+	c.SetCookie("auth", token, 86400, "/", r.cfg.Domain, true, true)
 	c.JSON(200, gin.H{"token": token, "email": user.Email})
 }
 
