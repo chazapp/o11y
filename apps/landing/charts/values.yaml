@@ -2,14 +2,16 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/chazapp/o11y/landing
-  tag: 0.0.1
+  tag: 0.1.0
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 3000
 
-ingress:
+authURL: https://api.o11y.local/auth
+
+httproute:
   enabled: true
   hosts:
     - host: o11y.local

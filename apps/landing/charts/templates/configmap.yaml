@@ -1,0 +1,12 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name }}
+data:
+  env.js: |
+    window.env = {
+        AUTH_URL: "{{ .Values.authURL }}",
+        VERSION: "{{ .Chart.AppVersion }}"
+    }
+
+

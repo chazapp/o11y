@@ -1,4 +1,4 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.httproute.enabled -}}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -8,11 +8,11 @@ spec:
   - name: o11y-gateway
     kind: Gateway
   hostnames:
-  {{- range .Values.ingress.hosts }}
+  {{- range .Values.httproute.hosts }}
     - {{ .host | quote }}
   {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+  {{- range .Values.httproute.hosts }}
   - matches:
     {{- range .paths }}
     - path:

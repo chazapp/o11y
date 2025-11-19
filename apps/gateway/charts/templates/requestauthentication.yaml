@@ -34,3 +34,4 @@ spec:
           hosts:
             - prometheus.o11y.local
             - grafana.o11y.local
+            - o11y.local

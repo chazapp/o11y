@@ -29,6 +29,8 @@ spec:
             - "--jwt-priv=/keys/private.json"
             - "--jwt-pub=/keys/public.json"
             - "--db=$(POSTGRES_URL)"
+            - "--cors-origins=https://o11y.local"
+            - "--domain=api.o11y.local"
           volumeMounts:
             - name: jwt-keys
               mountPath: "/keys"

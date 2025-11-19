@@ -25,3 +25,11 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+          volumeMounts:
+            - name: env-js
+              mountPath: /app/build/client/env.js
+              subPath: env.js
+      volumes:
+        - name: env-js
+          configMap:
+            name: {{ .Release.Name }}
