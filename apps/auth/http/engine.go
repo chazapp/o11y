@@ -136,7 +136,7 @@ func (r *AuthRouter) Me(c *gin.Context) {
 
 func (r *AuthRouter) AuthMiddleware() gin.HandlerFunc {
 	cleanup := func(c *gin.Context) {
-		c.SetCookie("auth", "", 0, "", "", true, true)
+		c.SetCookie("auth", "", -1, "/", r.cfg.Domain, true, true)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid authorization header"})
 		c.Abort()
 	}
