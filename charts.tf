@@ -116,7 +116,7 @@ resource "helm_release" "alloy" {
   name    = "alloy"
   repository = "https://grafana.github.io/helm-charts/"
   chart      = "alloy"
-  version    = "1.3.1"
+  version    = "1.4.0"
   namespace = var.tools_namespace
 
   values = [
